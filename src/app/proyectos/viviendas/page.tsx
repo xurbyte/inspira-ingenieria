@@ -112,7 +112,7 @@ export default function ViviendasPage() {
 
           {/* Projects Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projectsByType[selectedType].map((project, index) => (
+            {projectsByType[selectedType].map((project) => (
               <div
                 key={project.id}
                 className="group cursor-pointer bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105"

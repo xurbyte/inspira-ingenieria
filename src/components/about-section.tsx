@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, Target, Eye, Award } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 
 export function AboutSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -54,11 +55,12 @@ export function AboutSection() {
                 confiables, aportando claridad y eficiencia en cada decisión estructural.
               </p>
             </div>
-            <div className="relative">
-              <img
+            <div className="relative h-80 w-full">
+              <Image
                 src="/two-professional-engineers-working-with-structural.png"
                 alt="Tomás y Mateo Portalez trabajando en proyectos estructurales"
-                className="rounded-lg shadow-lg w-full"
+                fill
+                className="rounded-lg shadow-lg object-cover"
               />
             </div>
           </div>

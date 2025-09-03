@@ -5,7 +5,22 @@ import Image from "next/image"
 import Link from "next/link"
 
 // Mock data - in a real app this would come from a database or CMS
-const projectsData: Record<string, any> = {
+interface ProjectData {
+  title: string
+  type: string
+  year: string
+  location: string
+  area: string
+  client: string
+  description: string
+  challenge: string
+  solution: string
+  result: string
+  images: string[]
+  specs: string[]
+}
+
+const projectsData: Record<string, ProjectData> = {
   "casa-familiar-puerto-madryn": {
     title: "Casa Familiar Puerto Madryn",
     type: "Tradicional",

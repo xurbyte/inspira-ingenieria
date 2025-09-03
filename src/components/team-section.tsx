@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Linkedin, Mail } from "lucide-react"
+import Image from "next/image"
 
 export function TeamSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -64,11 +66,12 @@ export function TeamSection() {
                 style={{ transitionDelay: `${(index + 1) * 200}ms` }}
               >
                 <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                  <div className="aspect-square overflow-hidden">
-                    <img
+                  <div className="aspect-square overflow-hidden relative">
+                    <Image
                       src={member.image || "/placeholder.svg"}
                       alt={member.name}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      fill
+                      className="object-cover transition-transform duration-300 hover:scale-105"
                     />
                   </div>
                   <CardContent className="p-6 text-center">
