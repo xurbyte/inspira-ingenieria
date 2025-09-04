@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Home, Hammer, TreePine } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -10,50 +11,58 @@ import Image from "next/image"
 const projectsByType = {
   tradicional: [
     {
-      id: "casa-familiar-puerto-madryn",
-      title: "Casa Familiar Puerto Madryn",
-      image: "/casa-tradicional-hormig-n-mamposter-a-patagonia.png",
-      description: "Vivienda unifamiliar con sistema constructivo tradicional de hormigón y mampostería.",
-      year: "2023",
+      id: "vivienda-ramiro-uriarte",
+      title: "Vivienda Unifamiliar - Arq. Ramiro Uriarte",
+      image: "/proyectos/1. Vivienda Unifamiliar Arq Ramiro Iriarte/Render Etapa 1.jpg",
+      description: "Vivienda unifamiliar en Puerto Madryn con estructura de hormigón armado resistente a vientos patagónicos.",
+      year: "2024",
+      architect: "Arq. Ramiro Uriarte",
+      location: "Puerto Madryn",
+      system: "Hormigón armado y mampostería"
     },
     {
-      id: "duplex-centro-madryn",
-      title: "Dúplex Centro Madryn",
-      image: "/duplex-tradicional-hormig-n-dos-plantas.png",
-      description: "Desarrollo de dos unidades con estructura de hormigón armado.",
-      year: "2023",
+      id: "vivienda-franco-moretta",
+      title: "Vivienda Unifamiliar - Arq. Franco Moretta",
+      image: "/proyectos/2. Duplex Tradicional Hormig-n Dos Plantas/duplex-tradicional-hormig-n-dos-plantas.png",
+      description: "Vivienda unifamiliar en Puerto Madryn con estructura tradicional optimizada.",
+      year: "2024",
+      architect: "Arq. Franco Moretta",
+      location: "Puerto Madryn",
+      system: "Hormigón armado y mampostería"
+    },
+    {
+      id: "vivienda-dos-plantas-franco-moretta",
+      title: "Vivienda de Dos Plantas - Arq. Franco Moretta",
+      image: "/casa-tradicional-hormig-n-mamposter-a-patagonia.png",
+      description: "Vivienda de dos plantas con estructura tradicional y estabilidad global optimizada.",
+      year: "2024",
+      architect: "Arq. Franco Moretta",
+      location: "Puerto Madryn",
+      system: "Hormigón armado y mampostería"
     },
   ],
   steelframe: [
     {
-      id: "casa-moderna-steel-frame",
-      title: "Casa Moderna Steel Frame",
+      id: "gimnasio-martina-larovere",
+      title: "Gimnasio - Arq. Martina Larovere",
       image: "/casa-moderna-steel-frame-estructura-met-lica.png",
-      description: "Vivienda contemporánea con sistema steel frame optimizado para vientos patagónicos.",
+      description: "Estructura metálica para gimnasio con grandes luces libres y espacios funcionales.",
       year: "2024",
-    },
-    {
-      id: "ampliacion-steel-frame",
-      title: "Ampliación Steel Frame",
-      image: "/ampliaci-n-casa-steel-frame-estructura-liviana.png",
-      description: "Ampliación de vivienda existente con estructura metálica liviana.",
-      year: "2024",
+      architect: "Arq. Martina Larovere",
+      location: "Buenos Aires",
+      system: "Estructura metálica con pórticos"
     },
   ],
   woodframe: [
     {
-      id: "cabana-wood-frame",
-      title: "Cabaña Wood Frame",
+      id: "vivienda-wood-frame-martina-larovere",
+      title: "Vivienda Wood Frame - Arq. Martina Larovere",
       image: "/caba-a-madera-wood-frame-patagonia.png",
-      description: "Cabaña residencial con sistema wood frame adaptado al clima patagónico.",
-      year: "2023",
-    },
-    {
-      id: "casa-sustentable-madera",
-      title: "Casa Sustentable Madera",
-      image: "/casa-sustentable-madera-wood-frame-ecol-gica.png",
-      description: "Vivienda ecológica con estructura de madera y criterios de sustentabilidad.",
+      description: "Vivienda unifamiliar en sistema wood frame con eficiencia constructiva y comportamiento térmico optimizado.",
       year: "2024",
+      architect: "Arq. Martina Larovere",
+      location: "Buenos Aires",
+      system: "Wood frame con paneles estructurales"
     },
   ],
 }
@@ -70,15 +79,15 @@ export default function ViviendasPage() {
     <main className="min-h-screen pt-20 pb-16">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
+          <Button variant="ghost" onClick={() => router.push("/#proyectos")} className="mr-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver
+          </Button>
           {/* Header */}
-          <div className="flex items-center mb-8">
-            <Button variant="ghost" onClick={() => router.back()} className="mr-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver
-            </Button>
+          <div className="flex items-center justify-center mb-8">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Proyectos de Viviendas</h1>
-              <p className="text-muted-foreground">Soluciones residenciales con diferentes sistemas constructivos</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 uppercase">Proyectos de Viviendas</h1>
+              <p className="text-muted-foreground font-semibold">Soluciones residenciales con diferentes sistemas constructivos</p>
             </div>
           </div>
 
@@ -110,12 +119,12 @@ export default function ViviendasPage() {
             </Button>
           </div>
 
-          {/* Projects Bento Grid */}
+          {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projectsByType[selectedType].map((project) => (
-              <div
+              <Card
                 key={project.id}
-                className="group cursor-pointer bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30"
                 onClick={() => handleProjectClick(project.id)}
               >
                 <div className="relative h-48 overflow-hidden">
@@ -130,13 +139,13 @@ export default function ViviendasPage() {
                     <Badge variant="secondary">{project.year}</Badge>
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors uppercase">
                     {project.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">{project.description}</p>
-                </div>
-              </div>
+                  <p className="text-sm text-muted-foreground font-semibold">{project.description}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>

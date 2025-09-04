@@ -47,7 +47,7 @@
 :root {
   --radius: 0.625rem;
   /* Inspira Ingeniería Brand Colors */
-  --background: #FAFAFA; /* Clean white background */
+  --background: #E8E6E1; /* Light gray/beige from logo background */
   --foreground: #2C3E50; /* Dark charcoal from logo */
   --card: #FFFFFF;
   --card-foreground: #2C3E50;

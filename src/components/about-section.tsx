@@ -27,16 +27,16 @@ export function AboutSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="nosotros" className="min-h-screen py-20 bg-white flex items-center">
+    <section ref={sectionRef} id="nosotros" className="min-h-screen py-24 bg-background flex items-center">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div
             className={`text-center mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Quiénes Somos</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-              Somos Tomás y Mateo Portalez, ingenieros civiles con experiencia en proyectos que van desde viviendas
-              hasta grandes obras industriales en la región.
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 uppercase">Quiénes Somos</h2>
+            <p className="text-xl text-muted-foreground font-normal max-w-3xl mx-auto text-pretty">
+              Somos Tomás y Mateo Portalez, ingenieros civiles con experiencia en proyectos que
+              van desde viviendas unifamiliares hasta grandes obras industriales en la Patagonia.
             </p>
           </div>
 
@@ -44,14 +44,15 @@ export function AboutSection() {
             className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
             <div>
-              <h3 className="text-2xl font-bold text-foreground mb-6">Nuestra Historia</h3>
-              <p className="text-muted-foreground mb-6 leading-relaxed">
-                En Inspira Ingeniería nos enfocamos en el cálculo estructural y la optimización de proyectos, aplicando
-                herramientas BIM y software avanzado (CYPE, Revit, AutoCAD, SketchUp) para transformar ideas
-                arquitectónicas en estructuras seguras y eficientes.
+              <h3 className="text-2xl font-bold text-foreground mb-6 uppercase">Nuestra Historia</h3>
+              <p className="text-muted-foreground mb-6 font-semibold leading-relaxed">
+                En Inspira Ingeniería nos enfocamos en el cálculo estructural y la optimización de
+                proyectos. Usamos herramientas BIM y software avanzado (CYPE, Revit, AutoCAD,
+                SketchUp) para transformar ideas arquitectónicas en estructuras seguras y eficientes.
+
               </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Nuestro propósito es acompañar a arquitectos, desarrolladores y constructoras como socios técnicos
+              <p className="text-muted-foreground font-semibold leading-relaxed">
+                Acompañamos a arquitectos, desarrolladores y constructoras como socios técnicos
                 confiables, aportando claridad y eficiencia en cada decisión estructural.
               </p>
             </div>
@@ -69,30 +70,30 @@ export function AboutSection() {
           <div
             className={`grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 transition-all duration-1000 delay-400 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <Card className="border-primary/20">
+            <Card className="border-primary/30 bg-background backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="flex items-center mb-4">
                   <Target className="h-8 w-8 text-primary mr-3" />
-                  <h3 className="text-2xl font-bold text-foreground">Misión</h3>
+                  <h3 className="text-2xl font-bold text-foreground uppercase">Misión</h3>
                 </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  En Inspira Ingeniería ayudamos a arquitectos, desarrolladores y constructoras a transformar sus
-                  diseños en obras sólidas, seguras y eficientes. Nuestro compromiso es optimizar cada estructura con
-                  criterios técnicos claros, adaptados a la realidad constructiva de la Patagonia.
+                <p className="text-muted-foreground font-semibold leading-relaxed">
+                  Ayudamos a arquitectos, desarrolladores y constructoras a transformar sus diseños
+                  en obras seguras y eficientes. Optimizamos cada estructura con criterios técnicos
+                  claros, adaptados a la realidad constructiva de la Patagonia
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-secondary/20">
+            <Card className="border-primary/30 bg-background backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="flex items-center mb-4">
-                  <Eye className="h-8 w-8 text-secondary mr-3" />
-                  <h3 className="text-2xl font-bold text-foreground">Visión</h3>
+                  <Eye className="h-8 w-8 text-primary mr-3" />
+                  <h3 className="text-2xl font-bold text-foreground uppercase">Visión</h3>
                 </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  Convertirnos en un referente en soluciones estructurales en la Patagonia, creciendo paso a paso hacia
-                  un estudio integral que acompañe proyectos de mayor escala y complejidad. Queremos ser reconocidos por
-                  nuestra confiabilidad técnica y cercanía profesional.
+                <p className="text-muted-foreground font-semibold leading-relaxed">
+                  Queremos ser un referente en soluciones estructurales en la Patagonia, creciendo paso a
+                  paso hacia un estudio integral que acompañe proyectos de mayor escala. Buscamos ser
+                  reconocidos por nuestra confiabilidad técnica y cercanía profesional.
                 </p>
               </CardContent>
             </Card>
@@ -108,36 +109,40 @@ export function AboutSection() {
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="font-semibold text-foreground mb-2">Eficiencia Estructural</h4>
-                <p className="text-sm text-muted-foreground">
-                  Optimizamos proyectos evitando sobredimensionamientos, ahorrando hasta 10% en materiales
+                <h4 className="font-semibold text-foreground mb-2 uppercase">Eficiencia Estructural</h4>
+                <p className="text-sm text-muted-foreground font-semibold">
+                  Optimizamos cada proyecto evitando sobredimensionamientos y logrando ahorros de hasta un 10% en
+                  materiales.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Target className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="font-semibold text-foreground mb-2">Adaptación Local</h4>
-                <p className="text-sm text-muted-foreground">
-                  Diseños considerando vientos fuertes, suelos variables y normativas argentinas
+                <h4 className="font-semibold text-foreground mb-2 uppercase">Adaptación Local</h4>
+                <p className="text-sm text-muted-foreground font-semibold">
+                  Diseños adaptados a los vientos fuertes, suelos variables y
+                  normativas argentinas.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="font-semibold text-foreground mb-2">Equipo Actualizado</h4>
-                <p className="text-sm text-muted-foreground">
-                  Software avanzado y metodologías BIM para mejor coordinación
+                <h4 className="font-semibold text-foreground mb-2 uppercase">Equipo Actualizado</h4>
+                <p className="text-sm text-muted-foreground font-semibold">
+                  Trabajamos con software avanzado y metodologías BIM para
+                  una mejor coordinación.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="font-semibold text-foreground mb-2">Socios Confiables</h4>
-                <p className="text-sm text-muted-foreground">
-                  Acompañamiento desde anteproyecto, previniendo retrabajos
+                <h4 className="font-semibold text-foreground mb-2 uppercase">Socios Confiables</h4>
+                <p className="text-sm text-muted-foreground font-semibold">
+                  Acompañamos desde el anteproyecto, previniendo retrabajos y
+                  asegurando claridad técnica.
                 </p>
               </div>
             </div>

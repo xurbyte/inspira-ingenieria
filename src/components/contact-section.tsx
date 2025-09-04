@@ -54,16 +54,16 @@ export function ContactSection() {
   }
 
   return (
-    <section ref={sectionRef} id="contacto" className="min-h-screen py-20 bg-white flex items-center">
+    <section ref={sectionRef} id="contacto" className="min-h-screen py-24 bg-background flex items-center">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div
             className={`text-center mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Contactanos</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-              ¿Tenés un proyecto en mente? Contanos sobre tu obra y te ayudamos a encontrar la mejor solución
-              estructural.
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 uppercase">Contactanos</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty font-semibold">
+              ¿Tenés un proyecto en mente? Contanos sobre tu obra y te ayudamos a definir la
+              mejor solución estructural.
             </p>
           </div>
 
@@ -72,88 +72,94 @@ export function ContactSection() {
             <div
               className={`transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300">
+              <Card className="hover:shadow-lg h-full transition-shadow duration-300 bg-background backdrop-blur-sm border-primary/30">
                 <CardHeader>
-                  <CardTitle>Consultanos tu proyecto</CardTitle>
+                  <CardTitle className="uppercase">Consultanos tu proyecto</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                          Nombre *
+                <CardContent className="flex flex-col h-full">
+                  <form onSubmit={handleSubmit} className="flex flex-col h-full">
+                    <div className="space-y-6 flex-grow">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="name" className="block text-sm text-foreground mb-2 uppercase font-semibold">
+                            Nombre *
+                          </label>
+                          <Input
+                            id="name"
+                            name="name"
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Tu nombre completo"
+                            className="border-primary/30"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-sm text-foreground mb-2 uppercase font-semibold">
+                            Email *
+                          </label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="tu@email.com"
+                            className="border-primary/30"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="phone" className="block text-sm text-foreground mb-2 uppercase font-semibold">
+                            Teléfono
+                          </label>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="+54 9 280 456-3172"
+                            className="border-primary/30"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="project" className="block text-sm text-foreground mb-2 uppercase font-semibold">
+                            Tipo de proyecto
+                          </label>
+                          <Input
+                            id="project"
+                            name="project"
+                            type="text"
+                            value={formData.project}
+                            onChange={handleChange}
+                            placeholder="Ej: Vivienda, Edificio, Nave industrial"
+                            className="border-primary/30"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col flex-grow">
+                        <label htmlFor="message" className="block text-sm text-foreground mb-2 uppercase font-semibold">
+                          Mensaje *
                         </label>
-                        <Input
-                          id="name"
-                          name="name"
-                          type="text"
+                        <Textarea
+                          id="message"
+                          name="message"
                           required
-                          value={formData.name}
+                          value={formData.message}
                           onChange={handleChange}
-                          placeholder="Tu nombre completo"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                          Email *
-                        </label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="tu@email.com"
+                          placeholder="Contanos sobre tu proyecto: ubicación, tipo de estructura, etapa del proyecto, etc."
+                          className="border-primary/30 h-[100px]"
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
-                          Teléfono
-                        </label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="+54 9 280 456-3172"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="project" className="block text-sm font-medium text-foreground mb-2">
-                          Tipo de proyecto
-                        </label>
-                        <Input
-                          id="project"
-                          name="project"
-                          type="text"
-                          value={formData.project}
-                          onChange={handleChange}
-                          placeholder="Ej: Vivienda, Edificio, Industrial"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                        Mensaje *
-                      </label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        required
-                        value={formData.message}
-                        onChange={handleChange}
-                        placeholder="Contanos sobre tu proyecto: ubicación, tipo de estructura, etapa del proyecto, etc."
-                        rows={4}
-                      />
-                    </div>
-
-                    <Button type="submit" className="w-full">
+                    <Button type="submit" className="w-full mt-6">
                       Enviar consulta
                     </Button>
                   </form>
@@ -165,7 +171,7 @@ export function ContactSection() {
             <div
               className={`space-y-8 transition-all duration-1000 delay-400 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300">
+              <Card className="hover:shadow-lg transition-shadow duration-300 bg-background backdrop-blur-sm border-primary/30">
                 <CardHeader>
                   <CardTitle>Información de contacto</CardTitle>
                 </CardHeader>
@@ -208,7 +214,7 @@ export function ContactSection() {
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow duration-300">
+              <Card className="hover:shadow-lg transition-shadow duration-300 bg-background backdrop-blur-sm border-primary/30">
                 <CardHeader>
                   <CardTitle>Seguinos en redes</CardTitle>
                 </CardHeader>
@@ -242,7 +248,7 @@ export function ContactSection() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-primary/5 border-primary/20 hover:shadow-lg transition-shadow duration-300">
+              {/* <Card className="bg-background border-primary/20 hover:shadow-lg transition-shadow duration-300">
                 <CardContent className="p-6">
                   <h4 className="font-semibold text-foreground mb-2">¿Proyecto urgente?</h4>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -257,7 +263,7 @@ export function ContactSection() {
                     WhatsApp directo
                   </Button>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </div>

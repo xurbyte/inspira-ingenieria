@@ -31,7 +31,7 @@ export function Header() {
         isScrolled ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-sm" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-20 py-4 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Image
@@ -94,9 +94,6 @@ export function Header() {
             </button>
           </nav>
 
-          <Button onClick={() => scrollToSection("contacto")} className="hidden md:inline-flex">
-            Consultanos
-          </Button>
 
           <Button
             variant="ghost"
@@ -109,49 +106,48 @@ export function Header() {
         </div>
 
         {isMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4 bg-background/95 backdrop-blur-sm rounded-lg">
-            <div className="flex flex-col space-y-4">
-              <button
-                onClick={() => scrollToSection("inicio")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Inicio
-              </button>
-              <button
-                onClick={() => scrollToSection("nosotros")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Nosotros
-              </button>
-              <button
-                onClick={() => scrollToSection("servicios")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Servicios
-              </button>
-              <button
-                onClick={() => scrollToSection("equipo")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Equipo
-              </button>
-              <button
-                onClick={() => scrollToSection("proyectos")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Proyectos
-              </button>
-              <button
-                onClick={() => scrollToSection("contacto")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Contacto
-              </button>
-              <Button onClick={() => scrollToSection("contacto")} className="w-full mt-4">
-                Consultanos
-              </Button>
-            </div>
-          </nav>
+          <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4">
+            <nav className="bg-card/95 backdrop-blur-md border border-border rounded-xl shadow-xl overflow-hidden">
+              <div className="p-6 space-y-1">
+                <button
+                  onClick={() => scrollToSection("inicio")}
+                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                >
+                  Inicio
+                </button>
+                <button
+                  onClick={() => scrollToSection("nosotros")}
+                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                >
+                  Nosotros
+                </button>
+                <button
+                  onClick={() => scrollToSection("servicios")}
+                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                >
+                  Servicios
+                </button>
+                <button
+                  onClick={() => scrollToSection("equipo")}
+                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                >
+                  Equipo
+                </button>
+                <button
+                  onClick={() => scrollToSection("proyectos")}
+                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                >
+                  Proyectos
+                </button>
+                <button
+                  onClick={() => scrollToSection("contacto")}
+                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                >
+                  Contacto
+                </button>
+              </div>
+            </nav>
+          </div>
         )}
       </div>
     </header>

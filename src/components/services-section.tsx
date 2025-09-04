@@ -38,12 +38,12 @@ export function ServicesSection() {
       icon: Calculator,
       title: "Cálculo Estructural",
       description:
-        "Diseñamos y verificamos estructuras seguras y eficientes para viviendas, edificios y obras industriales.",
+        "Diseñamos estructuras seguras y eficientes para viviendas, edificios y naves industriales.",
       details: [
         "Sistemas constructivos tradicionales (hormigón y mampostería)",
-        "Wood frame y steel frame",
+        "Estructuras en wood frame y steel frame",
         "Estructuras metálicas para naves industriales",
-        "Optimización de materiales aplicando normativas CIRSOC",
+        "Optimización de materiales según normativas CIRSOC",
       ],
       cta: "Consultanos tu proyecto de cálculo estructural",
     },
@@ -51,10 +51,10 @@ export function ServicesSection() {
       icon: Building2,
       title: "Modelado BIM",
       description:
-        "Generamos modelos estructurales digitales que integran planos, detalles y documentación en un solo entorno.",
+        "Modelos digitales que integran planos, detalles y documentación en un único entorno.",
       details: [
-        "Coordinación mejorada con arquitectura",
-        "Reducción de errores en obra",
+        "Mejor coordinación con la arquitectura",
+        "Menos errores en obra",
         "Visualización previa de la estructura",
         "Documentación integrada y actualizada",
       ],
@@ -76,10 +76,10 @@ export function ServicesSection() {
       icon: Users,
       title: "Asesorías Técnicas para Profesionales",
       description:
-        "Acompañamos a arquitectos, constructoras y desarrolladores en decisiones estructurales desde el anteproyecto.",
+        "Asesoramos a arquitectos, constructoras y desarrolladores en decisiones estructurales desde el anteproyecto.",
       details: [
-        "Evitar sobredimensionamientos",
-        "Reducir retrabajos",
+        "Evitamos sobredimensionamientos",
+        "Reducimos retrabajos",
         "Soporte técnico en cada etapa",
         "Optimización de costos y tiempos",
       ],
@@ -88,14 +88,14 @@ export function ServicesSection() {
   ]
 
   return (
-    <section ref={sectionRef} id="servicios" className="min-h-screen py-20 bg-white flex items-center">
+    <section ref={sectionRef} id="servicios" className="min-h-screen py-24 bg-primary/20 flex items-center">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div
             className={`text-center mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Nuestros Servicios</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 uppercase">Nuestros Servicios</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty font-semibold">
               Ofrecemos soluciones integrales en ingeniería estructural, desde el cálculo hasta la documentación
               completa, adaptadas a las necesidades específicas de cada proyecto.
             </p>
@@ -108,26 +108,26 @@ export function ServicesSection() {
                 className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
                 style={{ transitionDelay: `${(index + 1) * 200}ms` }}
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 bg-background border-primary/30">
                   <CardHeader>
                     <div className="flex items-center mb-4">
                       <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
                         <service.icon className="h-6 w-6 text-primary" />
                       </div>
-                      <CardTitle className="text-xl">{service.title}</CardTitle>
+                      <CardTitle className="text-xl uppercase">{service.title}</CardTitle>
                     </div>
-                    <p className="text-muted-foreground">{service.description}</p>
+                    <p className="font-semibold">{service.description}</p>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2 mb-6">
                       {service.details.map((detail, detailIndex) => (
                         <li key={detailIndex} className="flex items-start">
                           <ArrowRight className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm text-muted-foreground">{detail}</span>
+                          <span className="text-sm font-semibold">{detail}</span>
                         </li>
                       ))}
                     </ul>
-                    <Button variant="outline" className="w-full bg-transparent" onClick={scrollToContact}>
+                    <Button variant="outline" className="w-full bg-primary cursor-pointer" onClick={scrollToContact}>
                       {service.cta}
                     </Button>
                   </CardContent>

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Calculator, Building2, Zap } from "lucide-react"
+import { Calculator, Building2, Zap } from "lucide-react"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 
@@ -38,9 +38,9 @@ export function HeroSection() {
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">
               Transformamos diseños en <span className="text-primary">estructuras seguras</span>
             </h1>
-            <p className="text-xl text-gray-200 mb-8 text-pretty max-w-2xl mx-auto">
-              Estudio de ingeniería estructural en Puerto Madryn. Soluciones técnicas para arquitectos y desarrolladores, 
-              adaptadas a la Patagonia.
+            <p className="text-xl text-gray-200 mb-8 text-pretty max-w-2xl mx-auto font-semibold">
+              Estudio de ingeniería estructural en Puerto Madryn. Diseñamos soluciones para
+              arquitectos y desarrolladores, adaptadas a la Patagonia.
             </p>
           </div>
 
@@ -49,7 +49,6 @@ export function HeroSection() {
           >
             <Button size="lg" onClick={() => scrollToSection("servicios")} className="text-lg px-8 py-6">
               Ver Servicios
-              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button
               variant="outline"
@@ -68,22 +67,26 @@ export function HeroSection() {
               <div className="w-16 h-16 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
                 <Calculator className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Cálculo Estructural</h3>
-              <p className="text-gray-200 text-sm">Diseños seguros y eficientes con normativas argentinas (CIRSOC)</p>
+              <h3 className="text-lg font-semibold mb-2 text-white uppercase">Cálculo Estructural</h3>
+              <p className="text-gray-200 text-sm font-semibold">Estructuras seguras y eficientes según normativas argentinas
+                (CIRSOC)
+              </p>
             </div>
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
                 <Building2 className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Modelado BIM</h3>
-              <p className="text-gray-200 text-sm">Modelos digitales integrados con herramientas avanzadas</p>
+              <h3 className="text-lg font-semibold mb-2 text-white uppercase">Modelado BIM</h3>
+              <p className="text-gray-200 text-sm font-semibold">Modelos digitales integrados con herramientas avanzadas</p>
             </div>
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
                 <Zap className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Adaptación Local</h3>
-              <p className="text-gray-200 text-sm">Especialistas en condiciones de la Patagonia</p>
+              <h3 className="text-lg font-semibold mb-2 text-white uppercase">Adaptación Local</h3>
+              <p className="text-gray-200 text-sm font-semibold">Diseñamos estructuras adaptadas a las condiciones únicas de la
+                Patagonia
+              </p>
             </div>
           </div>
         </div>

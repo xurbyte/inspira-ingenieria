@@ -21,30 +21,121 @@ interface ProjectData {
 }
 
 const projectsData: Record<string, ProjectData> = {
-  "casa-familiar-puerto-madryn": {
-    title: "Casa Familiar Puerto Madryn",
+  "vivienda-ramiro-uriarte": {
+    title: "Vivienda Unifamiliar - Arq. Ramiro Uriarte",
     type: "Tradicional",
-    year: "2023",
+    year: "2024",
     location: "Puerto Madryn, Chubut",
-    area: "180 m²",
-    client: "Familia González",
-    images: ["/casa-tradicional-hormig-n-fachada-principal.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
+    area: "150 m²",
+    client: "Arq. Ramiro Uriarte",
+    images: ["/casa-tradicional-hormig-n-mamposter-a-patagonia.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
     description:
-      "Vivienda unifamiliar de 180m² con sistema constructivo tradicional de hormigón armado y mampostería. El proyecto se desarrolló considerando las condiciones climáticas específicas de la Patagonia, con especial atención a los vientos predominantes y las variaciones térmicas.",
+      "Vivienda unifamiliar en Puerto Madryn, proyectada por el Arq. Ramiro Uriarte. Inspira Ingeniería desarrolló el cálculo estructural completo, integrando fundaciones, columnas, vigas y losas de hormigón armado con el diseño arquitectónico.",
     challenge:
-      "El principal desafío fue optimizar la estructura para resistir los vientos patagónicos manteniendo la economía del proyecto. El terreno presentaba características particulares que requerían una fundación específica.",
+      "El principal desafío fue diseñar una estructura resistente al viento predominante de la Patagonia, manteniendo la eficiencia económica del proyecto y evitando sobredimensionamientos.",
     solution:
-      "Se diseñó una estructura de hormigón armado con muros de mampostería, optimizando las secciones para reducir el consumo de materiales sin comprometer la seguridad. Se implementaron detalles constructivos específicos para el clima local.",
+      "Se dimensionaron fundaciones, columnas y losas de hormigón armado según normativa CIRSOC. Se optimizaron las secciones estructurales y se elaboró documentación técnica detallada para garantizar coordinación con la arquitectura y ejecución sin errores.",
     result:
-      "La obra se ejecutó sin inconvenientes, logrando una reducción del 8% en el consumo de hormigón respecto al diseño inicial, manteniendo todos los factores de seguridad requeridos por normativa.",
+      "Se logró una estructura segura, eficiente y optimizada en consumo de materiales, lista para su construcción sin retrabajos ni modificaciones.",
     specs: [
       "Sistema: Hormigón armado y mampostería",
-      "Fundación: Plateas y zapatas corridas",
-      "Cubierta: Losa de hormigón armado",
+      "Fundaciones: Zapatas centradas y excéntricas de hormigón armado",
+      "Estructura: Columnas, vigas y losas de hormigón armado",
       "Normativa: CIRSOC 201 y 301",
     ],
   },
-  // Add more projects here...
+  "vivienda-franco-moretta": {
+    title: "Vivienda Unifamiliar - Arq. Franco Moretta",
+    type: "Tradicional",
+    year: "2024",
+    location: "Puerto Madryn, Chubut",
+    area: "160 m²",
+    client: "Arq. Franco Moretta",
+    images: ["/duplex-tradicional-hormig-n-dos-plantas.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
+    description:
+      "Vivienda unifamiliar proyectada por el Arq. Franco Moreta en Puerto Madryn. Inspira Ingeniería desarrolló el cálculo estructural completo de la obra, integrando fundaciones, columnas, vigas y losas al diseño arquitectónico.",
+    challenge:
+      "El principal desafío fue resolver la estructura de una vivienda de dos plantas en sistema tradicional, optimizando secciones para evitar sobredimensionamientos y considerando las condiciones de viento predominantes en la Patagonia.",
+    solution:
+      "Se diseñaron fundaciones de hormigón armado, columnas y losas portantes aplicando normativa CIRSOC. Se trabajó en coordinación con el arquitecto para adaptar la estructura al proyecto arquitectónico, logrando un equilibrio entre seguridad, eficiencia y economía.",
+    result:
+      "El diseño permitió una estructura sólida y optimizada en consumo de materiales, lista para su ejecución sin retrabajos, asegurando durabilidad y cumplimiento normativo.",
+    specs: [
+      "Sistema: Tradicional (hormigón armado y mampostería)",
+      "Fundaciones: Zapatas centradas y excéntricas de hormigón armado",
+      "Estructura: Columnas, vigas y losas de hormigón armado",
+      "Normativa: CIRSOC 201 y 301",
+    ],
+  },
+  "vivienda-dos-plantas-franco-moretta": {
+    title: "Vivienda de Dos Plantas - Arq. Franco Moretta",
+    type: "Tradicional",
+    year: "2024",
+    location: "Puerto Madryn, Chubut",
+    area: "220 m²",
+    client: "Arq. Franco Moretta",
+    images: ["/casa-tradicional-hormig-n-mamposter-a-patagonia.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
+    description:
+      "Vivienda de dos plantas proyectada por el Arq. Franco Moreta en Puerto Madryn. Inspira Ingeniería desarrolló el cálculo estructural completo, integrando el diseño arquitectónico con la estructura resistente en sistema tradicional.",
+    challenge:
+      "El desafío principal fue garantizar la estabilidad global de la estructura frente a cargas de viento, resolver correctamente la transmisión de cargas entre plantas y optimizar las fundaciones de acuerdo a las características del terreno.",
+    solution:
+      "Se diseñaron zapatas centradas y excéntricas de hormigón armado, junto con columnas, vigas y losas estructurales. Se aplicó normativa CIRSOC para el dimensionamiento y se elaboró documentación técnica detallada, asegurando la correcta coordinación con el proyecto arquitectónico.",
+    result:
+      "El proyecto resultó en una estructura confiable y eficiente, con secciones optimizadas que redujeron el consumo de materiales, garantizando seguridad y economía en la ejecución.",
+    specs: [
+      "Sistema: Tradicional (hormigón armado y mampostería)",
+      "Fundaciones: Zapatas centradas y excéntricas de hormigón armado",
+      "Estructura: Columnas, vigas y losas de hormigón armado",
+      "Normativa: CIRSOC 201 y 301",
+    ],
+  },
+  "gimnasio-martina-larovere": {
+    title: "Gimnasio - Arq. Martina Larovere",
+    type: "Steel Frame",
+    year: "2024",
+    location: "Buenos Aires",
+    area: "400 m²",
+    client: "Arq. Martina Larovere",
+    images: ["/casa-moderna-steel-frame-estructura-met-lica.png", "/gimnasio-interior-estructura-metalica.png", "/planos-estructurales-steel-frame.png"],
+    description:
+      "Proyecto estructural para un gimnasio en Buenos Aires, en colaboración con la Arq. Martina Larovere. Inspira Ingeniería desarrolló el cálculo de la estructura resistente, asegurando espacios amplios y funcionales para su uso deportivo.",
+    challenge:
+      "El principal desafío fue diseñar una estructura metálica con grandes luces libres, que garantizara la seguridad frente a uso intensivo, manteniendo la economía en la elección de materiales y perfiles.",
+    solution:
+      "Se proyectó una estructura de acero conformada por pórticos principales y correas secundarias, dimensionada según normativa CIRSOC. Se optimizaron perfiles comerciales disponibles y se diseñaron fundaciones de hormigón armado para una correcta transmisión de cargas al suelo.",
+    result:
+      "Se logró una estructura robusta, segura y de ejecución eficiente, que permite un espacio interior libre de columnas intermedias y adaptable a diferentes usos deportivos.",
+    specs: [
+      "Sistema: Estructura metálica con pórticos y correas",
+      "Fundaciones: Zapatas aisladas de hormigón armado",
+      "Cubierta: Chapa metálica con pendiente mínima",
+      "Normativa: CIRSOC 301 (acero) y 201 (fundaciones)",
+    ],
+  },
+  "vivienda-wood-frame-martina-larovere": {
+    title: "Vivienda Wood Frame - Arq. Martina Larovere",
+    type: "Wood Frame",
+    year: "2024",
+    location: "Buenos Aires",
+    area: "140 m²",
+    client: "Arq. Martina Larovere",
+    images: ["/caba-a-madera-wood-frame-patagonia.png", "/wood-frame-interior-construccion.png", "/planos-estructurales-wood-frame.png"],
+    description:
+      "Vivienda unifamiliar proyectada por la Arq. Martina Larovere en Buenos Aires. Inspira Ingeniería desarrolló el cálculo estructural en sistema wood frame, priorizando eficiencia y rapidez constructiva en un contexto urbano.",
+    challenge:
+      "El desafío principal fue garantizar el correcto desempeño del sistema de madera frente a cargas de viento y sismo, optimizando secciones para evitar sobrecostos y asegurando rigidez lateral en los muros portantes.",
+    solution:
+      "Se diseñaron paneles estructurales con montantes de madera dimensionados según normativa, rigidizados con diafragmas de OSB. Se resolvieron apoyos sobre platea de hormigón armado y se verificó el comportamiento global de la estructura con software de cálculo.",
+    result:
+      "La estructura se optimizó para lograr un sistema liviano y eficiente, con buen comportamiento térmico y menor tiempo de ejecución respecto al sistema tradicional.",
+    specs: [
+      "Sistema: Wood frame (paneles de montantes + rigidización con OSB)",
+      "Fundaciones: Platea de hormigón armado",
+      "Estructura: Muros portantes de madera + diafragmas",
+      "Normativa: CIRSOC 601 (madera) y 201 (fundaciones)",
+    ],
+  },
 }
 
 interface ProjectPageProps {
@@ -62,7 +153,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Proyecto no encontrado</h1>
-            <Link href="/viviendas">
+            <Link href="/proyectos/viviendas">
               <Button>Volver a Viviendas</Button>
             </Link>
           </div>
@@ -77,7 +168,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center mb-8">
-            <Link href="/viviendas">
+            <Link href="/proyectos/viviendas">
               <Button variant="ghost" className="mr-4">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver a Viviendas
@@ -132,28 +223,28 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-3">Descripción del Proyecto</h2>
-                <p className="text-muted-foreground">{project.description}</p>
+                <h2 className="text-xl font-semibold mb-3 uppercase">Descripción del Proyecto</h2>
+                <p className="font-normal">{project.description}</p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Desafío Estructural</h2>
-                <p className="text-muted-foreground">{project.challenge}</p>
+                <h2 className="text-xl font-semibold mb-3 uppercase">Desafío Estructural</h2>
+                <p className="font-normal">{project.challenge}</p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Solución Técnica</h2>
-                <p className="text-muted-foreground">{project.solution}</p>
+                <h2 className="text-xl font-semibold mb-3 uppercase">Solución Técnica</h2>
+                <p className="font-normal">{project.solution}</p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Resultado</h2>
-                <p className="text-muted-foreground">{project.result}</p>
+                <h2 className="text-xl font-semibold mb-3 uppercase">Resultado</h2>
+                <p className="font-normal">{project.result}</p>
               </div>
             </div>
 
             <div>
-              <div className="bg-card border border-border rounded-lg p-6">
+              <div className="bg-background border border-primary/30 rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-4">Especificaciones Técnicas</h3>
                 <ul className="space-y-2">
                   {project.specs.map((spec: string, index: number) => (
