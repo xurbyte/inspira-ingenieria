@@ -13,7 +13,7 @@ const projectsByType = {
     {
       id: "vivienda-ramiro-uriarte",
       title: "Vivienda Unifamiliar - Arq. Ramiro Uriarte",
-      image: "/proyectos/1. Vivienda Unifamiliar Arq Ramiro Iriarte/Render Etapa 1.jpg",
+      image: "/proyectos/1.ViviendaUnifamiliarArqRamiroIriarte/RenderEtapa2.jpg",
       description: "Vivienda unifamiliar en Puerto Madryn con estructura de hormigón armado resistente a vientos patagónicos.",
       year: "2024",
       architect: "Arq. Ramiro Uriarte",
@@ -21,19 +21,9 @@ const projectsByType = {
       system: "Hormigón armado y mampostería"
     },
     {
-      id: "vivienda-franco-moretta",
-      title: "Vivienda Unifamiliar - Arq. Franco Moretta",
-      image: "/proyectos/2. Duplex Tradicional Hormig-n Dos Plantas/duplex-tradicional-hormig-n-dos-plantas.png",
-      description: "Vivienda unifamiliar en Puerto Madryn con estructura tradicional optimizada.",
-      year: "2024",
-      architect: "Arq. Franco Moretta",
-      location: "Puerto Madryn",
-      system: "Hormigón armado y mampostería"
-    },
-    {
       id: "vivienda-dos-plantas-franco-moretta",
       title: "Vivienda de Dos Plantas - Arq. Franco Moretta",
-      image: "/casa-tradicional-hormig-n-mamposter-a-patagonia.png",
+      image: "/proyectos/5.ProyectoCyJMoretta/Render Contrafachada.png",
       description: "Vivienda de dos plantas con estructura tradicional y estabilidad global optimizada.",
       year: "2024",
       architect: "Arq. Franco Moretta",
@@ -45,7 +35,7 @@ const projectsByType = {
     {
       id: "gimnasio-martina-larovere",
       title: "Gimnasio - Arq. Martina Larovere",
-      image: "/casa-moderna-steel-frame-estructura-met-lica.png",
+      image: "/proyectos/2. Gimnasio Galpon/portada.jpg",
       description: "Estructura metálica para gimnasio con grandes luces libres y espacios funcionales.",
       year: "2024",
       architect: "Arq. Martina Larovere",
@@ -57,7 +47,7 @@ const projectsByType = {
     {
       id: "vivienda-wood-frame-martina-larovere",
       title: "Vivienda Wood Frame - Arq. Martina Larovere",
-      image: "/caba-a-madera-wood-frame-patagonia.png",
+      image: "/proyectos/3. Casa Woodframe/borrar 1.jpg",
       description: "Vivienda unifamiliar en sistema wood frame con eficiencia constructiva y comportamiento térmico optimizado.",
       year: "2024",
       architect: "Arq. Martina Larovere",

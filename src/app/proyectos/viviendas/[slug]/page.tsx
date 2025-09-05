@@ -1,23 +1,23 @@
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, MapPin, Ruler, Users } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Calendar, MapPin, Ruler, Users } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 // Mock data - in a real app this would come from a database or CMS
 interface ProjectData {
-  title: string
-  type: string
-  year: string
-  location: string
-  area: string
-  client: string
-  description: string
-  challenge: string
-  solution: string
-  result: string
-  images: string[]
-  specs: string[]
+  title: string;
+  type: string;
+  year: string;
+  location: string;
+  area: string;
+  client: string;
+  description: string;
+  challenge: string;
+  solution: string;
+  result: string;
+  images: string[];
+  specs: string[];
 }
 
 const projectsData: Record<string, ProjectData> = {
@@ -28,7 +28,11 @@ const projectsData: Record<string, ProjectData> = {
     location: "Puerto Madryn, Chubut",
     area: "150 m²",
     client: "Arq. Ramiro Uriarte",
-    images: ["/casa-tradicional-hormig-n-mamposter-a-patagonia.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
+    images: [
+      "/proyectos/1.ViviendaUnifamiliarArqRamiroIriarte/1234.jpg",
+      "/proyectos/1.ViviendaUnifamiliarArqRamiroIriarte/RenderEtapa1.jpg",
+      "/proyectos/1.ViviendaUnifamiliarArqRamiroIriarte/RenderEtapa2.jpg",
+    ],
     description:
       "Vivienda unifamiliar en Puerto Madryn, proyectada por el Arq. Ramiro Uriarte. Inspira Ingeniería desarrolló el cálculo estructural completo, integrando fundaciones, columnas, vigas y losas de hormigón armado con el diseño arquitectónico.",
     challenge:
@@ -44,29 +48,6 @@ const projectsData: Record<string, ProjectData> = {
       "Normativa: CIRSOC 201 y 301",
     ],
   },
-  "vivienda-franco-moretta": {
-    title: "Vivienda Unifamiliar - Arq. Franco Moretta",
-    type: "Tradicional",
-    year: "2024",
-    location: "Puerto Madryn, Chubut",
-    area: "160 m²",
-    client: "Arq. Franco Moretta",
-    images: ["/duplex-tradicional-hormig-n-dos-plantas.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
-    description:
-      "Vivienda unifamiliar proyectada por el Arq. Franco Moreta en Puerto Madryn. Inspira Ingeniería desarrolló el cálculo estructural completo de la obra, integrando fundaciones, columnas, vigas y losas al diseño arquitectónico.",
-    challenge:
-      "El principal desafío fue resolver la estructura de una vivienda de dos plantas en sistema tradicional, optimizando secciones para evitar sobredimensionamientos y considerando las condiciones de viento predominantes en la Patagonia.",
-    solution:
-      "Se diseñaron fundaciones de hormigón armado, columnas y losas portantes aplicando normativa CIRSOC. Se trabajó en coordinación con el arquitecto para adaptar la estructura al proyecto arquitectónico, logrando un equilibrio entre seguridad, eficiencia y economía.",
-    result:
-      "El diseño permitió una estructura sólida y optimizada en consumo de materiales, lista para su ejecución sin retrabajos, asegurando durabilidad y cumplimiento normativo.",
-    specs: [
-      "Sistema: Tradicional (hormigón armado y mampostería)",
-      "Fundaciones: Zapatas centradas y excéntricas de hormigón armado",
-      "Estructura: Columnas, vigas y losas de hormigón armado",
-      "Normativa: CIRSOC 201 y 301",
-    ],
-  },
   "vivienda-dos-plantas-franco-moretta": {
     title: "Vivienda de Dos Plantas - Arq. Franco Moretta",
     type: "Tradicional",
@@ -74,7 +55,11 @@ const projectsData: Record<string, ProjectData> = {
     location: "Puerto Madryn, Chubut",
     area: "220 m²",
     client: "Arq. Franco Moretta",
-    images: ["/casa-tradicional-hormig-n-mamposter-a-patagonia.png", "/casa-tradicional-interior-living-comedor.png", "/planos-estructurales-casa-tradicional.png"],
+    images: [
+      "/proyectos/5.ProyectoCyJMoretta/render CyJ.jpg",
+      "/proyectos/5.ProyectoCyJMoretta/RenderFachada.png",
+      "/proyectos/5.ProyectoCyJMoretta/Render Contrafachada.png",
+    ],
     description:
       "Vivienda de dos plantas proyectada por el Arq. Franco Moreta en Puerto Madryn. Inspira Ingeniería desarrolló el cálculo estructural completo, integrando el diseño arquitectónico con la estructura resistente en sistema tradicional.",
     challenge:
@@ -97,7 +82,11 @@ const projectsData: Record<string, ProjectData> = {
     location: "Buenos Aires",
     area: "400 m²",
     client: "Arq. Martina Larovere",
-    images: ["/casa-moderna-steel-frame-estructura-met-lica.png", "/gimnasio-interior-estructura-metalica.png", "/planos-estructurales-steel-frame.png"],
+    images: [
+      "/proyectos/2. Gimnasio Galpon/Proyecto gimnasio.png",
+      "/proyectos/2. Gimnasio Galpon/IMG-20250415-WA0006.jpg",
+      "/proyectos/2. Gimnasio Galpon/IMG-20250415-WA0011.jpg",
+    ],
     description:
       "Proyecto estructural para un gimnasio en Buenos Aires, en colaboración con la Arq. Martina Larovere. Inspira Ingeniería desarrolló el cálculo de la estructura resistente, asegurando espacios amplios y funcionales para su uso deportivo.",
     challenge:
@@ -120,7 +109,11 @@ const projectsData: Record<string, ProjectData> = {
     location: "Buenos Aires",
     area: "140 m²",
     client: "Arq. Martina Larovere",
-    images: ["/caba-a-madera-wood-frame-patagonia.png", "/wood-frame-interior-construccion.png", "/planos-estructurales-wood-frame.png"],
+    images: [
+      "/proyectos/3. Casa Woodframe/casa de madera.png",
+      "/proyectos/3. Casa Woodframe/borrar 3.jpg",
+      "/proyectos/3. Casa Woodframe/borrar 5.jpg",
+    ],
     description:
       "Vivienda unifamiliar proyectada por la Arq. Martina Larovere en Buenos Aires. Inspira Ingeniería desarrolló el cálculo estructural en sistema wood frame, priorizando eficiencia y rapidez constructiva en un contexto urbano.",
     challenge:
@@ -136,16 +129,18 @@ const projectsData: Record<string, ProjectData> = {
       "Normativa: CIRSOC 601 (madera) y 201 (fundaciones)",
     ],
   },
-}
+};
 
 interface ProjectPageProps {
   params: {
-    slug: string
-  }
+    slug: string;
+  };
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = projectsData[params.slug]
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { slug } = params;
+  const project = projectsData[slug];
+
 
   if (!project) {
     return (
@@ -159,7 +154,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           </div>
         </div>
       </main>
-    )
+    );
   }
 
   return (
@@ -182,7 +177,9 @@ export default function ProjectPage({ params }: ProjectPageProps) {
               <Badge variant="secondary">{project.type}</Badge>
               <Badge variant="outline">{project.year}</Badge>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{project.title}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {project.title}
+            </h1>
 
             {/* Project Info */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -208,7 +205,10 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           {/* Images */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {project.images.map((image: string, index: number) => (
-              <div key={index} className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+              <div
+                key={index}
+                className="relative h-64 md:h-80 rounded-lg overflow-hidden"
+              >
                 <Image
                   src={image || "/placeholder.svg"}
                   alt={`${project.title} - Imagen ${index + 1}`}
@@ -223,29 +223,39 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-3 uppercase">Descripción del Proyecto</h2>
+                <h2 className="text-xl font-semibold mb-3 uppercase">
+                  Descripción del Proyecto
+                </h2>
                 <p className="font-normal">{project.description}</p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3 uppercase">Desafío Estructural</h2>
+                <h2 className="text-xl font-semibold mb-3 uppercase">
+                  Desafío Estructural
+                </h2>
                 <p className="font-normal">{project.challenge}</p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3 uppercase">Solución Técnica</h2>
+                <h2 className="text-xl font-semibold mb-3 uppercase">
+                  Solución Técnica
+                </h2>
                 <p className="font-normal">{project.solution}</p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3 uppercase">Resultado</h2>
+                <h2 className="text-xl font-semibold mb-3 uppercase">
+                  Resultado
+                </h2>
                 <p className="font-normal">{project.result}</p>
               </div>
             </div>
 
             <div>
               <div className="bg-background border border-primary/30 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Especificaciones Técnicas</h3>
+                <h3 className="text-lg font-semibold mb-4">
+                  Especificaciones Técnicas
+                </h3>
                 <ul className="space-y-2">
                   {project.specs.map((spec: string, index: number) => (
                     <li key={index} className="text-sm text-muted-foreground">
@@ -259,5 +269,5 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </div>
     </main>
-  )
+  );
 }

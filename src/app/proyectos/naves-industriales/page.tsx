@@ -13,7 +13,7 @@ const projectsByType = {
     {
       id: "nave-industrial-andrea-garilio",
       title: "Nave Industrial - Arq. Andrea Garilio",
-      image: "/nave-industrial-estructura-metalica-patagonia.png",
+      image: "/proyectos/4. Galpón Gariglio/INTERIOR1.png",
       description: "Nave industrial con estructura metálica y grandes luces libres, optimizada para vientos patagónicos.",
       year: "2024",
       architect: "Arq. Andrea Garilio",
@@ -25,7 +25,7 @@ const projectsByType = {
     {
       id: "estudio-naval-arqueadoestudio",
       title: "Estudio Naval - Arqueadoestudio",
-      image: "/estudio-naval-estructura-hormigon-puerto-madryn.png",
+      image: "/proyectos/6. Proyecto WG/IMG-20250722-WA0025.jpg",
       description: "Estructura para estudio naval con grandes luces y espacios amplios en zona costera.",
       year: "2024",
       architect: "Arqueadoestudio",
@@ -35,7 +35,7 @@ const projectsByType = {
     {
       id: "salon-eventos-nicolas-mirantes",
       title: "Salón de Eventos - Arq. Nicolás Mirantes",
-      image: "/salon-eventos-estructura-hormigon-gaiman.png",
+      image: "/proyectos/7.Salon de eventos/17Foto.jpg",
       description: "Salón de eventos en chacra con espacios amplios libres de columnas intermedias.",
       year: "2024",
       architect: "Arq. Nicolás Mirantes",
@@ -47,7 +47,7 @@ const projectsByType = {
     {
       id: "deposito-soterrado-ramiro-iriarte",
       title: "Depósito Soterrado - Arq. Ramiro Iriarte",
-      image: "/deposito-soterrado-cubierta-metalica.png",
+      image: "/proyectos/8.Deposito Soterrado/3D.jpg",
       description: "Cubierta metálica para depósito soterrado con cabreadas optimizadas.",
       year: "2024",
       architect: "Arq. Ramiro Iriarte",

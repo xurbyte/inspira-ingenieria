@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function Footer() {
   return (
     <footer className="bg-primary/20 py-12">
@@ -7,13 +9,18 @@ export function Footer() {
             {/* Logo and Description */}
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <span className="text-xl font-bold uppercase">Inspira Ingeniería</span>
+                <span className="text-xl font-bold uppercase">
+                  Inspira Ingeniería
+                </span>
               </div>
               <p className="mb-4 max-w-md">
-                Estudio de ingeniería civil especializado en cálculo estructural y soluciones BIM. Transformamos diseños
-                en estructuras seguras y eficientes en la Patagonia.
+                Estudio de ingeniería civil especializado en cálculo estructural
+                y soluciones BIM. Transformamos diseños en estructuras seguras y
+                eficientes en la Patagonia.
               </p>
-              <p className="text-sm">Fundado por Tomás y Mateo Portalez en Puerto Madryn, Chubut.</p>
+              <p className="text-sm">
+                Fundado por Tomás y Mateo Portalez en Puerto Madryn, Chubut.
+              </p>
             </div>
 
             {/* Services */}
@@ -40,12 +47,28 @@ export function Footer() {
           </div>
 
           <div className="border-t border-background/20 mt-8 pt-8 text-center uppercase">
-            <p className="text-sm">
-              © 2024 Inspira Ingeniería. Todos los derechos reservados. | Desarrollado por <a href="https://xurbyte.com" target="_blank" rel="noopener noreferrer" className="underline">Xurbyte</a>.
+            <p className="text-sm flex justify-center items-center gap-1">
+              © 2024 Inspira Ingeniería. Todos los derechos reservados. |
+              Desarrollado por
+              <a
+                href="https://xurbyte.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline flex items-center gap-1"
+              >
+                <Image
+                  src="/logoxurbyte.png"
+                  alt="Logo Xurbyte"
+                  width={80} // ancho requerido
+                  height={80} // alto requerido
+                  className="inline-block"
+                />
+              </a>
+              .
             </p>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }

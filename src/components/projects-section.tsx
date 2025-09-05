@@ -35,7 +35,7 @@ export function ProjectsSection() {
           <div
             className={`mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 uppercase">Nuestros Proyectos</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 mt-8 uppercase">Nuestros Proyectos</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty font-semibold">
               Explorá nuestros proyectos organizados por tipo de construcción. Cada obra refleja
               soluciones adaptadas a las necesidades de cada cliente.
@@ -83,7 +83,7 @@ export function ProjectsSection() {
             <p className=" mb-4 uppercase font-semibold">¿Tenés un proyecto en mente?</p>
             <Button
               variant="outline"
-              className="cursor-pointer uppercase bg-primary"
+              className="cursor-pointer uppercase bg-primary mb-6"
               onClick={() => {
                 const element = document.getElementById("contacto")
                 if (element) {
