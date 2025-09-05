@@ -61,7 +61,7 @@ export function Footer() {
                   alt="Logo Xurbyte"
                   width={80} // ancho requerido
                   height={80} // alto requerido
-                  className="inline-block"
+                  className="inline-block mb-1"
                 />
               </a>
               .

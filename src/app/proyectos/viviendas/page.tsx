@@ -1,61 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, Home, Hammer, TreePine } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { ArrowLeft, Home, Hammer, TreePine } from "lucide-react"
+import { ViviendasProject } from "@/types/project"
+import projectsData from "@/data/viviendas.json"
 
+const projects = projectsData as unknown as ViviendasProject[];
+
+// Group projects by type
 const projectsByType = {
-  tradicional: [
-    {
-      id: "vivienda-ramiro-uriarte",
-      title: "Vivienda Unifamiliar - Arq. Ramiro Uriarte",
-      image: "/proyectos/1.ViviendaUnifamiliarArqRamiroIriarte/RenderEtapa2.jpg",
-      description: "Vivienda unifamiliar en Puerto Madryn con estructura de hormigón armado resistente a vientos patagónicos.",
-      year: "2024",
-      architect: "Arq. Ramiro Uriarte",
-      location: "Puerto Madryn",
-      system: "Hormigón armado y mampostería"
-    },
-    {
-      id: "vivienda-dos-plantas-franco-moretta",
-      title: "Vivienda de Dos Plantas - Arq. Franco Moretta",
-      image: "/proyectos/5.ProyectoCyJMoretta/Render Contrafachada.png",
-      description: "Vivienda de dos plantas con estructura tradicional y estabilidad global optimizada.",
-      year: "2024",
-      architect: "Arq. Franco Moretta",
-      location: "Puerto Madryn",
-      system: "Hormigón armado y mampostería"
-    },
-  ],
-  steelframe: [
-    {
-      id: "gimnasio-martina-larovere",
-      title: "Gimnasio - Arq. Martina Larovere",
-      image: "/proyectos/2. Gimnasio Galpon/portada.jpg",
-      description: "Estructura metálica para gimnasio con grandes luces libres y espacios funcionales.",
-      year: "2024",
-      architect: "Arq. Martina Larovere",
-      location: "Buenos Aires",
-      system: "Estructura metálica con pórticos"
-    },
-  ],
-  woodframe: [
-    {
-      id: "vivienda-wood-frame-martina-larovere",
-      title: "Vivienda Wood Frame - Arq. Martina Larovere",
-      image: "/proyectos/3. Casa Woodframe/borrar 1.jpg",
-      description: "Vivienda unifamiliar en sistema wood frame con eficiencia constructiva y comportamiento térmico optimizado.",
-      year: "2024",
-      architect: "Arq. Martina Larovere",
-      location: "Buenos Aires",
-      system: "Wood frame con paneles estructurales"
-    },
-  ],
-}
+  tradicional: projects.filter(p => p.type === "tradicional"),
+  steelframe: projects.filter(p => p.type === "steelframe"),
+  woodframe: projects.filter(p => p.type === "woodframe"),
+};
 
 export default function ViviendasPage() {
   const router = useRouter()
@@ -119,8 +81,8 @@ export default function ViviendasPage() {
               >
                 <div className="relative h-48 overflow-hidden">
                   <Image
-                    src={project.image || "/placeholder.svg"}
-                    alt={project.title}
+                    src={project.coverImage.src || "/placeholder.svg"}
+                    alt={project.coverImage.alt}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-300"
                   />

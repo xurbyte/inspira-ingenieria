@@ -1,0 +1,98 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Building2, Warehouse } from "lucide-react";
+import { FuncionalProject } from "@/types/project";
+import projectsData from "@/data/funcional.json";
+
+const projects = projectsData as unknown as FuncionalProject[];
+
+// Group projects by type
+const projectsByType = {
+  comerciales: projects.filter(p => p.type === "comerciales"),
+  depositos: projects.filter(p => p.type === "depositos"),
+};
+
+export default function FuncionalPage() {
+  const router = useRouter()
+  const [selectedType, setSelectedType] = useState<"comerciales" | "depositos">("comerciales")
+
+  const handleProjectClick = (projectId: string) => {
+    router.push(`/proyectos/funcional/${projectId}`)
+  }
+
+  return (
+    <main className="min-h-screen pt-20 pb-16">
+      <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto">
+          <Button variant="ghost" onClick={() => router.push("/#proyectos")} className="mr-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver
+          </Button>
+          {/* Header */}
+          <div className="flex items-center justify-center mb-8">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 uppercase">Proyectos Funcionales</h1>
+              <p className="text-muted-foreground font-semibold">Estructuras especializadas para uso comercial y almacenamiento</p>
+            </div>
+          </div>
+
+          {/* Type Filter */}
+          <div className="flex flex-wrap gap-4 mb-8">
+            <Button
+              variant={selectedType === "comerciales" ? "default" : "outline"}
+              onClick={() => setSelectedType("comerciales")}
+              className="flex items-center"
+            >
+              <Building2 className="h-4 w-4 mr-2" />
+              Comerciales
+            </Button>
+            <Button
+              variant={selectedType === "depositos" ? "default" : "outline"}
+              onClick={() => setSelectedType("depositos")}
+              className="flex items-center"
+            >
+              <Warehouse className="h-4 w-4 mr-2" />
+              Depósitos
+            </Button>
+          </div>
+
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projectsByType[selectedType].map((project) => (
+              <Card
+                key={project.id}
+                className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30"
+                onClick={() => handleProjectClick(project.id)}
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={project.coverImage.src || "/placeholder.svg"}
+                    alt={project.coverImage.alt}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                  <div className="absolute top-4 right-4">
+                    <Badge variant="secondary">{project.year}</Badge>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors uppercase">
+                    {project.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground font-semibold">{project.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}

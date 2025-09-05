@@ -58,7 +58,7 @@ export function AboutSection() {
             </div>
             <div className="relative h-80 w-full">
               <Image
-                src="/two-professional-engineers-working-with-structural.png"
+                src="/asd.jpg"
                 alt="Tomás y Mateo Portalez trabajando en proyectos estructurales"
                 fill
                 className="rounded-lg shadow-lg object-cover"

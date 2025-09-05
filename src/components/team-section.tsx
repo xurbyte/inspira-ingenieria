@@ -30,14 +30,14 @@ export function TeamSection() {
     {
       name: "Tomás Portalez",
       title: "Ingeniero Civil - Co-fundador",
-      image: "/professional-engineer-portrait-tom-s.png",
+      image: "/tomas.jpg",
       description:
         "Especialista en cálculo estructural y elaboración de memorias técnicas, con experiencia en viviendas, edificios y obras industriales",
     },
     {
       name: "Mateo Portalez",
       title: "Ingeniero Civil - Co-fundador",
-      image: "/professional-engineer-portrait-mateo.png",
+      image: "/mateo.jpg",
       description:
         "Referente en modelado estructural y documentación técnica, integrando arquitectura y cálculo en entornos BIM.",
     },
@@ -65,7 +65,7 @@ export function TeamSection() {
                 className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
                 style={{ transitionDelay: `${(index + 1) * 200}ms` }}
               >
-                <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-background border-primary/30">
+                <Card className="overflow-hidden pt-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-background border-primary/30">
                   <div className="aspect-square overflow-hidden relative">
                     <Image
                       src={member.image || "/placeholder.svg"}

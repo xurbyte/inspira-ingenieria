@@ -27,68 +27,62 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-sm" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-background/50 backdrop-blur-sm border-border shadow-sm" : "bg-transparent"
+        }`}
     >
       <div className="container mx-auto px-20 py-4 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Image
-              src="/logo.png"
-              alt="Inspira Ingeniería Logo"
-              width={180}
-              height={40}
-              className="h-10 w-auto"
-            />
+              <Image
+                src="/logo.png"
+                alt="Inspira Ingeniería Logo"
+                width={100}
+                height={40}
+                className="h-12 w-auto cursor-pointer"
+                onClick={() => scrollToSection("inicio")}
+              />
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => scrollToSection("inicio")}
-              className={`transition-colors ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
-              }`}
+              className={`transition-colors cursor-pointer font-medium ${isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                }`}
             >
               Inicio
             </button>
             <button
               onClick={() => scrollToSection("nosotros")}
-              className={`transition-colors ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
-              }`}
+              className={`transition-colors cursor-pointer font-medium ${isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                }`}
             >
               Nosotros
             </button>
             <button
               onClick={() => scrollToSection("servicios")}
-              className={`transition-colors ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
-              }`}
+              className={`transition-colors cursor-pointer font-medium ${isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                }`}
             >
               Servicios
             </button>
             <button
               onClick={() => scrollToSection("equipo")}
-              className={`transition-colors ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
-              }`}
+              className={`transition-colors cursor-pointer font-medium ${isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                }`}
             >
               Equipo
             </button>
             <button
               onClick={() => scrollToSection("proyectos")}
-              className={`transition-colors ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
-              }`}
+              className={`transition-colors cursor-pointer font-medium ${isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                }`}
             >
               Proyectos
             </button>
             <button
               onClick={() => scrollToSection("contacto")}
-              className={`transition-colors ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
-              }`}
+              className={`transition-colors cursor-pointer font-medium ${isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                }`}
             >
               Contacto
             </button>
