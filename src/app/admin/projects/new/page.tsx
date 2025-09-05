@@ -117,11 +117,49 @@ function NewProjectContent() {
     }))
   }
 
+  const validateFiles = () => {
+    const maxFileSize = 5 * 1024 * 1024 // 5MB per file
+    const maxTotalSize = 10 * 1024 * 1024 // 10MB total
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    
+    let totalSize = 0
+    
+    // Validate cover image
+    if (formData.coverImage) {
+      if (formData.coverImage.size > maxFileSize) {
+        throw new Error(`La imagen de portada es muy grande. Máximo 5MB por archivo.`)
+      }
+      if (!allowedTypes.includes(formData.coverImage.type)) {
+        throw new Error(`Tipo de archivo no válido para imagen de portada. Solo se permiten JPEG, PNG y WebP.`)
+      }
+      totalSize += formData.coverImage.size
+    }
+    
+    // Validate detail images
+    for (let i = 0; i < formData.detailImages.length; i++) {
+      const file = formData.detailImages[i]
+      if (file.size > maxFileSize) {
+        throw new Error(`La imagen ${i + 1} es muy grande. Máximo 5MB por archivo.`)
+      }
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error(`Tipo de archivo no válido para imagen ${i + 1}. Solo se permiten JPEG, PNG y WebP.`)
+      }
+      totalSize += file.size
+    }
+    
+    if (totalSize > maxTotalSize) {
+      throw new Error(`El tamaño total de archivos (${(totalSize / 1024 / 1024).toFixed(1)}MB) excede el límite de 10MB.`)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
+      // Validate files before sending
+      validateFiles()
+      
       const submitData = new FormData()
       
       Object.entries(formData).forEach(([key, value]) => {

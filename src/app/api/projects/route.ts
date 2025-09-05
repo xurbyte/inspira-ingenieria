@@ -3,6 +3,7 @@ import { writeFile, mkdir, readFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 import { Project } from '@/types/project'
+import cloudinary from '@/lib/cloudinary'
 
 function generateId(title: string): string {
   return title
@@ -14,22 +15,63 @@ function generateId(title: string): string {
 }
 
 async function saveUploadedFile(file: File, category: string, projectId: string, type: 'portada' | 'adentro'): Promise<string> {
+  // Validate individual file size (max 5MB per file)
+  const maxFileSize = 5 * 1024 * 1024 // 5MB
+  if (file.size > maxFileSize) {
+    throw new Error(`File ${file.name} is too large. Maximum size is 5MB per file.`)
+  }
+
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(`File ${file.name} has invalid type. Only JPEG, PNG, and WebP are allowed.`)
+  }
+
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
 
-  const projectDir = path.join(process.cwd(), 'public', 'proyectos', category, projectId, type)
+  try {
+    // Upload to Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          folder: `inspira-ingenieria/${category}/${projectId}/${type}`,
+          public_id: `${Date.now()}-${Math.random().toString(36).substring(2)}`,
+          transformation: [
+            { quality: 'auto', fetch_format: 'auto' },
+            { width: 1200, height: 800, crop: 'limit' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(buffer)
+    })
 
-  if (!existsSync(projectDir)) {
-    await mkdir(projectDir, { recursive: true })
+    return (uploadResult as { secure_url: string }).secure_url
+  } catch (error) {
+    console.error('Cloudinary upload error:', error)
+    
+    // Fallback to local storage in development
+    if (process.env.NODE_ENV === 'development') {
+      const projectDir = path.join(process.cwd(), 'public', 'proyectos', category, projectId, type)
+
+      if (!existsSync(projectDir)) {
+        await mkdir(projectDir, { recursive: true })
+      }
+
+      const extension = path.extname(file.name)
+      const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}${extension}`
+      const filepath = path.join(projectDir, filename)
+
+      await writeFile(filepath, buffer)
+      return `/proyectos/${category}/${projectId}/${type}/${filename}`
+    }
+    
+    throw new Error('Failed to upload image')
   }
-
-  const extension = path.extname(file.name)
-  const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}${extension}`
-  const filepath = path.join(projectDir, filename)
-
-  await writeFile(filepath, buffer)
-
-  return `/proyectos/${category}/${projectId}/${type}/${filename}`
 }
 
 async function updateProjectsJson(category: string, project: Project): Promise<boolean> {
@@ -50,8 +92,22 @@ async function updateProjectsJson(category: string, project: Project): Promise<b
   }
 }
 
+// Configure runtime and body parser
+export const runtime = 'nodejs'
+export const maxDuration = 30
+
 export async function POST(request: NextRequest) {
   try {
+    // Add file size validation before processing
+    const contentLength = request.headers.get('content-length')
+    const maxSize = 10 * 1024 * 1024 // 10MB limit
+    
+    if (contentLength && parseInt(contentLength) > maxSize) {
+      return NextResponse.json({ 
+        error: 'Request too large. Maximum file size is 10MB total.' 
+      }, { status: 413 })
+    }
+
     const formData = await request.formData()
 
     const title = formData.get('title') as string

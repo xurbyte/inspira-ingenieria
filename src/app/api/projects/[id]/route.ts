@@ -3,20 +3,66 @@ import { writeFile, mkdir, readFile, rm } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 import { Project, ProjectImage } from '@/types/project'
+import cloudinary from '@/lib/cloudinary'
 
 async function saveUploadedFile(file: File, category: string, projectId: string, type: 'portada' | 'adentro'): Promise<string> {
+  // Validate individual file size (max 5MB per file)
+  const maxFileSize = 5 * 1024 * 1024 // 5MB
+  if (file.size > maxFileSize) {
+    throw new Error(`File ${file.name} is too large. Maximum size is 5MB per file.`)
+  }
+
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(`File ${file.name} has invalid type. Only JPEG, PNG, and WebP are allowed.`)
+  }
+
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
-  const projectDir = path.join(process.cwd(), 'public', 'proyectos', category, projectId, type)
 
-  if (!existsSync(projectDir)) {
-    await mkdir(projectDir, { recursive: true })
+  try {
+    // Upload to Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          folder: `inspira-ingenieria/${category}/${projectId}/${type}`,
+          public_id: `${Date.now()}-${Math.random().toString(36).substring(2)}`,
+          transformation: [
+            { quality: 'auto', fetch_format: 'auto' },
+            { width: 1200, height: 800, crop: 'limit' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(buffer)
+    })
+
+    return (uploadResult as { secure_url: string }).secure_url
+  } catch (error) {
+    console.error('Cloudinary upload error:', error)
+    
+    // Fallback to local storage in development
+    if (process.env.NODE_ENV === 'development') {
+      const projectDir = path.join(process.cwd(), 'public', 'proyectos', category, projectId, type)
+
+      if (!existsSync(projectDir)) {
+        await mkdir(projectDir, { recursive: true })
+      }
+
+      const extension = path.extname(file.name)
+      const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}${extension}`
+      const filepath = path.join(projectDir, filename)
+
+      await writeFile(filepath, buffer)
+      return `/proyectos/${category}/${projectId}/${type}/${filename}`
+    }
+    
+    throw new Error('Failed to upload image')
   }
-  const extension = path.extname(file.name)
-  const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}${extension}`
-  const filepath = path.join(projectDir, filename)
-  await writeFile(filepath, buffer)
-  return `/proyectos/${category}/${projectId}/${type}/${filename}`
 }
 
 async function updateProjectInJson(category: string, projectId: string, updatedProject: Project) {
@@ -49,6 +95,57 @@ async function deleteProjectFromJson(category: string, projectId: string) {
     return true
   } catch (error) {
     console.error('Error deleting from JSON file:', error)
+    return false
+  }
+}
+
+async function deleteCloudinaryImages(project: Project, category: string, projectId: string) {
+  try {
+    const categoryFolderMap: { [key: string]: string } = {
+      'viviendas': 'Vivienda',
+      'naves-industriales': 'Nave industrial',
+      'funcional': 'Funcional'
+    }
+    
+    const categoryFolder = categoryFolderMap[category] || category
+    const folderPath = `inspira-ingenieria/${categoryFolder}/${projectId}`
+    
+    // Delete all images in the project folder from Cloudinary
+    const result = await cloudinary.api.delete_resources_by_prefix(folderPath)
+    console.log(`Deleted ${result.deleted.length} images from Cloudinary for project ${projectId}`)
+    
+    // Delete the folder structure in reverse order (deepest first)
+    try {
+      await cloudinary.api.delete_folder(`${folderPath}/portada`)
+    } catch (error) {
+      console.log('Portada folder already deleted or does not exist')
+    }
+    
+    try {
+      await cloudinary.api.delete_folder(`${folderPath}/adentro`)
+    } catch (error) {
+      console.log('Adentro folder already deleted or does not exist')
+    }
+    
+    // Finally delete the main project folder
+    try {
+      await cloudinary.api.delete_folder(folderPath)
+      console.log(`Successfully deleted project folder: ${folderPath}`)
+    } catch (error) {
+      console.error(`Error deleting project folder ${folderPath}:`, error)
+      // Force delete by trying to delete any remaining resources
+      try {
+        await cloudinary.api.delete_resources_by_prefix(folderPath, { type: 'upload', resource_type: 'image' })
+        await cloudinary.api.delete_folder(folderPath)
+        console.log(`Force deleted project folder: ${folderPath}`)
+      } catch (forceError) {
+        console.error(`Failed to force delete folder ${folderPath}:`, forceError)
+      }
+    }
+    
+    return true
+  } catch (error) {
+    console.error('Error deleting images from Cloudinary:', error)
     return false
   }
 }
@@ -186,14 +283,41 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: 'Category parameter is required' }, { status: 400 })
     }
     
+    // First, get the project data to access image URLs
+    const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
+    let project: Project | null = null
+    
+    try {
+      const jsonContent = await readFile(jsonPath, 'utf-8')
+      const projects = JSON.parse(jsonContent)
+      project = projects.find((p: Project) => p.id === projectId)
+    } catch (error) {
+      console.error('Error reading project data:', error)
+    }
+    
+    // Delete images from Cloudinary if project exists and has Cloudinary images
+    if (project) {
+      const hasCloudinaryImages = project.coverImage.src.includes('cloudinary.com') || 
+                                  project.images.some(img => img.src.includes('cloudinary.com'))
+      
+      if (hasCloudinaryImages) {
+        const cloudinarySuccess = await deleteCloudinaryImages(project, category, projectId)
+        if (!cloudinarySuccess) {
+          console.warn('Failed to delete images from Cloudinary, but continuing with project deletion')
+        }
+      }
+    }
+    
+    // Delete project from JSON
     const jsonSuccess = await deleteProjectFromJson(category, projectId)
     if (!jsonSuccess) {
       return NextResponse.json({ error: 'Failed to delete project from database' }, { status: 500 })
     }
     
+    // Delete local files (if any)
     const filesSuccess = await deleteProjectFiles(category, projectId)
     if (!filesSuccess) {
-      console.warn('Failed to delete project files, but project was removed from database')
+      console.warn('Failed to delete local project files, but project was removed from database')
     }
     
     return NextResponse.json({ 
