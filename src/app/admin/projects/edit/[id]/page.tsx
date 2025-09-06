@@ -10,10 +10,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Upload, X, Plus, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 
-import viviendas from '@/data/viviendas.json'
-import navesIndustriales from '@/data/naves-industriales.json'
-import funcional from '@/data/funcional.json'
-
 type Project = {
   id: string
   title: string
@@ -62,6 +58,7 @@ type ProjectFormData = {
 export default function EditProject() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [loadingProject, setLoadingProject] = useState(true)
   const [category, setCategory] = useState<string>('')
   const [project, setProject] = useState<Project | null>(null)
   const [formData, setFormData] = useState<ProjectFormData>({
@@ -99,39 +96,44 @@ export default function EditProject() {
     }
   }, [router, searchParams, projectId])
 
-  const loadProject = (cat: string, id: string) => {
-    let projects: Project[] = []
-    
-    switch (cat) {
-      case 'viviendas':
-        projects = viviendas as unknown as Project[]
-        break
-      case 'naves-industriales':
-        projects = navesIndustriales as unknown as Project[]
-        break
-      case 'funcional':
-        projects = funcional as unknown as Project[]
-        break
-    }
+  const loadProject = async (cat: string, id: string) => {
+    setLoadingProject(true)
+    try {
+      const response = await fetch(`/api/projects?category=${cat}`)
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cargar proyectos')
+      }
 
-    const foundProject = projects.find(p => p.id === id)
-    if (foundProject) {
-      setProject(foundProject)
-      setFormData({
-        title: foundProject.title,
-        architect: foundProject.architect,
-        location: foundProject.location,
-        year: foundProject.year,
-        system: foundProject.system,
-        type: foundProject.type,
-        area: foundProject.area,
-        description: foundProject.description,
-        challenge: foundProject.challenge || '',
-        solution: foundProject.solution || '',
-        result: foundProject.result || '',
-        coverImage: null,
-        detailImages: []
-      })
+      const projects = data.projects || []
+      const foundProject = projects.find((p: Project) => p.id === id)
+      
+      if (foundProject) {
+        setProject(foundProject)
+        setFormData({
+          title: foundProject.title,
+          architect: foundProject.architect,
+          location: foundProject.location,
+          year: foundProject.year,
+          system: foundProject.system,
+          type: foundProject.type,
+          area: foundProject.area,
+          description: foundProject.description,
+          challenge: foundProject.challenge || '',
+          solution: foundProject.solution || '',
+          result: foundProject.result || '',
+          coverImage: null,
+          detailImages: []
+        })
+      } else {
+        throw new Error('Proyecto no encontrado')
+      }
+    } catch (error) {
+      console.error('Error loading project:', error)
+      alert(error instanceof Error ? error.message : 'Error al cargar el proyecto')
+    } finally {
+      setLoadingProject(false)
     }
   }
 
@@ -292,8 +294,30 @@ export default function EditProject() {
     return <div className="min-h-screen flex items-center justify-center">Verificando autenticación...</div>
   }
 
+  if (loadingProject) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Cargando proyecto...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!project) {
-    return <div className="min-h-screen flex items-center justify-center">Cargando proyecto...</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Proyecto no encontrado</h2>
+          <p className="text-gray-600 mb-4">El proyecto que buscas no existe o no tienes permisos para verlo.</p>
+          <Button onClick={() => router.push('/admin/dashboard')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver al Dashboard
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (

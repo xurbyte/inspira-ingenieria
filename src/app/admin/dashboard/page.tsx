@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,11 +9,6 @@ import { useToast } from '@/components/ui/toast'
 import { useConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { Plus, Edit, Trash2, Home, Factory, Building, LogOut } from 'lucide-react'
 import Image from 'next/image'
-
-// Import project data
-import viviendas from '@/data/viviendas.json'
-import navesIndustriales from '@/data/naves-industriales.json'
-import funcional from '@/data/funcional.json'
 
 type Project = {
   id: string
@@ -37,6 +32,38 @@ export default function AdminDashboard() {
   const [selectedCategory, setSelectedCategory] = useState<'viviendas' | 'naves-industriales' | 'funcional'>('viviendas')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [projectsData, setProjectsData] = useState<{[key: string]: Project[]}>({
+    viviendas: [],
+    'naves-industriales': [],
+    funcional: []
+  })
+  const [loading, setLoading] = useState(true)
+
+  const loadAllProjects = useCallback(async () => {
+    setLoading(true)
+    try {
+      const categories = ['viviendas', 'naves-industriales', 'funcional']
+      const projectsPromises = categories.map(async (category) => {
+        const response = await fetch(`/api/projects?category=${category}`)
+        const data = await response.json()
+        return { category, projects: data.projects || [] }
+      })
+
+      const results = await Promise.all(projectsPromises)
+      const newProjectsData: {[key: string]: Project[]} = {}
+      
+      results.forEach(({ category, projects }) => {
+        newProjectsData[category] = projects
+      })
+
+      setProjectsData(newProjectsData)
+    } catch (error) {
+      console.error('Error loading projects:', error)
+      showToast('error', 'Error', 'No se pudieron cargar los proyectos')
+    } finally {
+      setLoading(false)
+    }
+  }, [showToast])
 
   useEffect(() => {
     const auth = localStorage.getItem('adminAuth')
@@ -44,8 +71,9 @@ export default function AdminDashboard() {
       router.push('/admin')
     } else {
       setIsAuthenticated(true)
+      loadAllProjects()
     }
-  }, [router])
+  }, [router, loadAllProjects])
 
   const handleLogout = () => {
     localStorage.removeItem('adminAuth')
@@ -54,23 +82,14 @@ export default function AdminDashboard() {
 
   const getAllProjects = (): { category: string; projects: Project[] }[] => {
     return [
-      { category: 'viviendas', projects: viviendas as Project[] },
-      { category: 'naves-industriales', projects: navesIndustriales as Project[] },
-      { category: 'funcional', projects: funcional as Project[] }
+      { category: 'viviendas', projects: projectsData.viviendas },
+      { category: 'naves-industriales', projects: projectsData['naves-industriales'] },
+      { category: 'funcional', projects: projectsData.funcional }
     ]
   }
 
   const getCurrentProjects = (): Project[] => {
-    switch (selectedCategory) {
-      case 'viviendas':
-        return viviendas as Project[]
-      case 'naves-industriales':
-        return navesIndustriales as Project[]
-      case 'funcional':
-        return funcional as Project[]
-      default:
-        return []
-    }
+    return projectsData[selectedCategory] || []
   }
 
   const getCategoryIcon = (category: string) => {
@@ -124,6 +143,9 @@ export default function AdminDashboard() {
 
       showToast('success', 'Proyecto eliminado exitosamente', `El proyecto "${projectTitle}" ha sido eliminado correctamente.`)
       
+      // Reload projects after successful deletion
+      await loadAllProjects()
+      
     } catch (error) {
       console.error('Error deleting project:', error)
       showToast('error', 'Error al eliminar proyecto', error instanceof Error ? error.message : 'Error al eliminar el proyecto. Por favor, intenta nuevamente.')
@@ -134,6 +156,17 @@ export default function AdminDashboard() {
 
   if (!isAuthenticated) {
     return <div className="min-h-screen flex items-center justify-center">Verificando autenticación...</div>
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Cargando proyectos...</p>
+        </div>
+      </div>
+    )
   }
 
   const currentProjects = getCurrentProjects()

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir, readFile } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 import { Project } from '@/types/project'
 import cloudinary from '@/lib/cloudinary'
+import { addProjectToBlob, getProjectsFromBlob } from '@/lib/blob-storage'
 
 function generateId(title: string): string {
   return title
@@ -74,22 +75,9 @@ async function saveUploadedFile(file: File, category: string, projectId: string,
   }
 }
 
-async function updateProjectsJson(category: string, project: Project): Promise<boolean> {
-  const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
-
-  try {
-    const jsonContent = await readFile(jsonPath, 'utf-8')
-    const projects = JSON.parse(jsonContent)
-
-    projects.push(project)
-
-    await writeFile(jsonPath, JSON.stringify(projects, null, 2))
-
-    return true
-  } catch (error) {
-    console.error('Error updating JSON file:', error)
-    return false
-  }
+async function updateProjectsJson(category: string, newProject: Project): Promise<boolean> {
+  // Use Vercel Blob in production, fallback to JSON in development
+  return await addProjectToBlob(category, newProject)
 }
 
 // Configure runtime and body parser
@@ -211,14 +199,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Category parameter is required' }, { status: 400 })
     }
 
-    const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
-    const jsonContent = await readFile(jsonPath, 'utf-8')
-    const projects = JSON.parse(jsonContent)
-
+    const projects = await getProjectsFromBlob(category)
     return NextResponse.json({ projects })
 
   } catch (error) {
-    console.error('Error fetching projects:', error)
-    return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 })
+    console.error('Error reading projects:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

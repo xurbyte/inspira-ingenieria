@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir, readFile, rm } from 'fs/promises'
+import { writeFile, mkdir, rm } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 import { Project, ProjectImage } from '@/types/project'
 import cloudinary from '@/lib/cloudinary'
+import { getProjectsFromBlob, updateProjectInBlob, deleteProjectFromBlob } from '@/lib/blob-storage'
 
 async function saveUploadedFile(file: File, category: string, projectId: string, type: 'portada' | 'adentro'): Promise<string> {
   // Validate individual file size (max 5MB per file)
@@ -66,37 +67,13 @@ async function saveUploadedFile(file: File, category: string, projectId: string,
 }
 
 async function updateProjectInJson(category: string, projectId: string, updatedProject: Project) {
-  const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
-  
-  try {
-    const jsonContent = await readFile(jsonPath, 'utf-8')
-    const projects = JSON.parse(jsonContent)
-    const projectIndex = projects.findIndex((p: Project) => p.id === projectId)
-    if (projectIndex === -1) {
-      return false
-    }
-    projects[projectIndex] = updatedProject
-    await writeFile(jsonPath, JSON.stringify(projects, null, 2))
-    return true
-  } catch (error) {
-    console.error('Error updating JSON file:', error)
-    return false
-  }
+  // Use Vercel Blob in production, fallback to JSON in development
+  return await updateProjectInBlob(category, projectId, updatedProject)
 }
 
 async function deleteProjectFromJson(category: string, projectId: string) {
-  const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
-  
-  try {
-    const jsonContent = await readFile(jsonPath, 'utf-8')
-    const projects = JSON.parse(jsonContent)
-    const updatedProjects = projects.filter((p: Project) => p.id !== projectId)
-    await writeFile(jsonPath, JSON.stringify(updatedProjects, null, 2))
-    return true
-  } catch (error) {
-    console.error('Error deleting from JSON file:', error)
-    return false
-  }
+  // Use Vercel Blob in production, fallback to JSON in development
+  return await deleteProjectFromBlob(category, projectId)
 }
 
 async function deleteCloudinaryImages(project: Project, category: string, projectId: string) {
@@ -117,13 +94,13 @@ async function deleteCloudinaryImages(project: Project, category: string, projec
     // Delete the folder structure in reverse order (deepest first)
     try {
       await cloudinary.api.delete_folder(`${folderPath}/portada`)
-    } catch (error) {
+    } catch {
       console.log('Portada folder already deleted or does not exist')
     }
     
     try {
       await cloudinary.api.delete_folder(`${folderPath}/adentro`)
-    } catch (error) {
+    } catch {
       console.log('Adentro folder already deleted or does not exist')
     }
     
@@ -194,9 +171,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
     
-    const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
-    const jsonContent = await readFile(jsonPath, 'utf-8')
-    const projects = JSON.parse(jsonContent)
+    const projects = await getProjectsFromBlob(category)
     const currentProject = projects.find((p: Project) => p.id === projectId)
     
     if (!currentProject) {
@@ -236,7 +211,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       location,
       year,
       system,
-      type,
+      type: type as Project['type'],
       area,
       coverImage: {
         src: coverImagePath,
@@ -284,13 +259,11 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
     
     // First, get the project data to access image URLs
-    const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
     let project: Project | null = null
     
     try {
-      const jsonContent = await readFile(jsonPath, 'utf-8')
-      const projects = JSON.parse(jsonContent)
-      project = projects.find((p: Project) => p.id === projectId)
+      const projects = await getProjectsFromBlob(category)
+      project = projects.find((p: Project) => p.id === projectId) || null
     } catch (error) {
       console.error('Error reading project data:', error)
     }

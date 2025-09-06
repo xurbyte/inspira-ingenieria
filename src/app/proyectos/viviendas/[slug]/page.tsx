@@ -3,8 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, MapPin, Ruler, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { readFileSync } from "fs";
-import { join } from "path";
+import { getProjectBySlug } from '@/lib/project-data';
 
 interface ProjectImage {
   src: string;
@@ -18,23 +17,6 @@ interface ProjectSpecs {
   normative: string;
 }
 
-interface LegacyProjectData {
-  id: string;
-  title: string;
-  architect: string;
-  location: string;
-  year: string;
-  system: string;
-  type: string;
-  area: string;
-  coverImage: ProjectImage;
-  images: ProjectImage[];
-  description: string;
-  challenge: string;
-  solution: string;
-  result: string;
-  specs: ProjectSpecs;
-}
 
 interface ProjectPageProps {
   params: {
@@ -45,13 +27,8 @@ interface ProjectPageProps {
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
   
-  // Read projects data from JSON file
-  const filePath = join(process.cwd(), 'src', 'data', 'viviendas.json');
-  const fileContents = readFileSync(filePath, 'utf8');
-  const projects: LegacyProjectData[] = JSON.parse(fileContents);
-  
-  // Find project by slug (id)
-  const project = projects.find((p: LegacyProjectData) => p.id === slug);
+  // Get project data using the new unified function
+  const project = await getProjectBySlug('viviendas', slug);
 
 
   if (!project) {
