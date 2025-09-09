@@ -40,7 +40,7 @@ export function ContactSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData)
+    // Form submitted
     // For now, we'll just show an alert
     alert("Gracias por tu consulta. Te contactaremos pronto.")
     setFormData({ name: "", email: "", phone: "", project: "", message: "" })

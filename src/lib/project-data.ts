@@ -1,68 +1,22 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
-import { Project } from '@/types/project'
-import { getProjectsFromBlob } from '@/lib/blob-storage'
+import { getProjectService } from './dependency-injection'
+import { DatabaseProject } from '@/types/database'
 
-// Legacy project data interface for existing JSON files
-interface LegacyProjectData {
-  id: string
-  title: string
-  architect: string
-  location: string
-  year: string
-  system: string
-  type: string
-  area: string
-  coverImage: {
-    src: string
-    alt: string
-  }
-  images: Array<{
-    src: string
-    alt: string
-  }>
-  description: string
-  challenge: string
-  solution: string
-  result: string
-  specs: {
-    system: string
-    foundations: string
-    structure: string
-    normative: string
-  }
-}
-
-export async function getProjectsByCategory(category: string): Promise<Project[]> {
+export async function getProjectsByCategory(category: string): Promise<DatabaseProject[]> {
   try {
-    // Try to get from Vercel Blob first (production)
-    const projects = await getProjectsFromBlob(category)
-    if (projects.length > 0) {
-      return projects
-    }
-    
-    // Fallback to local JSON files (development)
-    const filePath = join(process.cwd(), 'src', 'data', `${category}.json`)
-    const fileContents = readFileSync(filePath, 'utf8')
-    const legacyProjects: LegacyProjectData[] = JSON.parse(fileContents)
-    
-    // Convert legacy format to current Project type
-    return legacyProjects.map(project => ({
-      ...project,
-      type: project.type as Project['type'] // Type assertion for compatibility
-    }))
+    const projectService = getProjectService()
+    return await projectService.getProjectsByCategory(category)
   } catch (error) {
     console.error(`Error reading projects for category ${category}:`, error)
     return []
   }
 }
 
-export async function getProjectBySlug(category: string, slug: string): Promise<Project | null> {
+export async function getProjectBySlug(category: string, slug: string): Promise<DatabaseProject | null> {
   try {
-    const projects = await getProjectsByCategory(category)
-    return projects.find(project => project.id === slug) || null
+    const projectService = getProjectService()
+    return await projectService.getProjectBySlug(category, slug)
   } catch (error) {
-    console.error(`Error finding project ${slug} in category ${category}:`, error)
+    console.error('Error fetching project by slug:', error)
     return null
   }
 }

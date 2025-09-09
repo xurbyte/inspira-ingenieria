@@ -7,17 +7,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
-import { NavesIndustrialesProject } from "@/types/project";
+import { DatabaseProject } from "@/types/database";
 
 export default function NavesIndustrialesPage() {
   const router = useRouter()
-  const [projects, setProjects] = useState<NavesIndustrialesProject[]>([])
+  const [projects, setProjects] = useState<DatabaseProject[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('/api/projects?category=naves-industriales')
+        const response = await fetch(`/api/projects?category=naves-industriales`)
         const data = await response.json()
         setProjects(data.projects || [])
       } catch (error) {
@@ -31,8 +31,8 @@ export default function NavesIndustrialesPage() {
     fetchProjects()
   }, [])
 
-  const handleProjectClick = (projectId: string) => {
-    router.push(`/proyectos/naves-industriales/${projectId}`)
+  const handleProjectClick = (project: DatabaseProject) => {
+    router.push(`/proyectos/naves-industriales/${project.slug}`)
   }
 
   return (
@@ -66,11 +66,11 @@ export default function NavesIndustrialesPage() {
                   <p className="text-muted-foreground">No hay proyectos disponibles.</p>
                 </div>
               ) : (
-                projects.map((project: NavesIndustrialesProject) => (
+                projects.map((project) => (
                   <Card
                     key={project.id}
                     className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30"
-                    onClick={() => handleProjectClick(project.id)}
+                    onClick={() => handleProjectClick(project)}
                   >
                     <div className="relative h-48 overflow-hidden">
                       <Image

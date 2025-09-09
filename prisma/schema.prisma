@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  architect   String
+  location    String
+  year        String
+  system      String
+  description String   @db.Text
+  challenge   String   @db.Text
+  solution    String   @db.Text
+  result      String   @db.Text
+  category    Category
+  type        String
+  area        String?
+  coverImage  Json     // {src: string, alt: string}
+  images      Json[]   // Array of {src: string, alt: string}
+  specs       Json     // {system: string, foundations: string, structure: string, roof?: string, normative: string}
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("projects")
+}
+
+enum Category {
+  VIVIENDAS
+  NAVES_INDUSTRIALES
+  FUNCIONAL
+
+  @@map("categories")
+}

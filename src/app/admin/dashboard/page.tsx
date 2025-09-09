@@ -10,20 +10,9 @@ import { useConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { Plus, Edit, Trash2, Home, Factory, Building, LogOut } from 'lucide-react'
 import Image from 'next/image'
 
-type Project = {
-  id: string
-  title: string
-  architect: string
-  location: string
-  year: string
-  system: string
-  type: string
-  area: string
-  coverImage: {
-    src: string
-    alt: string
-  }
-}
+import { DatabaseProject } from '@/types/database'
+
+type Project = DatabaseProject
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -44,7 +33,14 @@ export default function AdminDashboard() {
     try {
       const categories = ['viviendas', 'naves-industriales', 'funcional']
       const projectsPromises = categories.map(async (category) => {
-        const response = await fetch(`/api/projects?category=${category}`)
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime()
+        const response = await fetch(`/api/projects?category=${category}&t=${timestamp}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        })
         const data = await response.json()
         return { category, projects: data.projects || [] }
       })
@@ -255,6 +251,7 @@ export default function AdminDashboard() {
                   alt={project.coverImage.alt}
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               </div>
               <CardHeader>

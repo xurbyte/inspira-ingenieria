@@ -7,18 +7,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Building2, Warehouse } from "lucide-react";
-import { FuncionalProject } from "@/types/project";
+import { DatabaseProject } from "@/types/database";
 
 export default function FuncionalPage() {
   const router = useRouter()
   const [selectedType, setSelectedType] = useState<"comerciales" | "depositos">("comerciales")
-  const [projects, setProjects] = useState<FuncionalProject[]>([])
+  const [projects, setProjects] = useState<DatabaseProject[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('/api/projects?category=funcional')
+        const response = await fetch(`/api/projects?category=funcional`)
         const data = await response.json()
         setProjects(data.projects || [])
       } catch (error) {
@@ -38,8 +38,8 @@ export default function FuncionalPage() {
     depositos: projects.filter(p => p.type === "depositos"),
   }
 
-  const handleProjectClick = (projectId: string) => {
-    router.push(`/proyectos/funcional/${projectId}`)
+  const handleProjectClick = (project: DatabaseProject) => {
+    router.push(`/proyectos/funcional/${project.slug}`)
   }
 
   return (
@@ -97,7 +97,7 @@ export default function FuncionalPage() {
                   <Card
                     key={project.id}
                     className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30"
-                    onClick={() => handleProjectClick(project.id)}
+                    onClick={() => handleProjectClick(project)}
                   >
                     <div className="relative h-48 overflow-hidden">
                       <Image

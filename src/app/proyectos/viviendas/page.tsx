@@ -7,22 +7,21 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Home, Hammer, TreePine } from "lucide-react"
-import { ViviendasProject } from "@/types/project"
+import { DatabaseProject } from "@/types/database"
 
 export default function ViviendasPage() {
   const router = useRouter()
   const [selectedType, setSelectedType] = useState<"tradicional" | "steelframe" | "woodframe">("tradicional")
-  const [projects, setProjects] = useState<ViviendasProject[]>([])
+  const [projects, setProjects] = useState<DatabaseProject[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('/api/projects?category=viviendas')
+        const response = await fetch(`/api/projects?category=viviendas`)
         const data = await response.json()
         setProjects(data.projects || [])
-      } catch (error) {
-        console.error('Error fetching projects:', error)
+      } catch {
         setProjects([])
       } finally {
         setLoading(false)
@@ -32,15 +31,10 @@ export default function ViviendasPage() {
     fetchProjects()
   }, [])
 
-  // Group projects by type
-  const projectsByType = {
-    tradicional: projects.filter(p => p.type === "tradicional"),
-    steelframe: projects.filter(p => p.type === "steelframe"),
-    woodframe: projects.filter(p => p.type === "woodframe"),
-  }
+  const filteredProjects = projects
 
-  const handleProjectClick = (projectId: string) => {
-    router.push(`/proyectos/viviendas/${projectId}`)
+  const handleProjectClick = (project: DatabaseProject) => {
+    router.push(`/proyectos/viviendas/${project.slug}`)
   }
 
   return (
@@ -97,16 +91,16 @@ export default function ViviendasPage() {
           {/* Projects Grid */}
           {!loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projectsByType[selectedType].length === 0 ? (
+              {filteredProjects.length === 0 ? (
                 <div className="col-span-full text-center py-12">
                   <p className="text-muted-foreground">No hay proyectos de este tipo disponibles.</p>
                 </div>
               ) : (
-                projectsByType[selectedType].map((project) => (
+                filteredProjects.map((project: DatabaseProject) => (
                   <Card
                     key={project.id}
                     className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30"
-                    onClick={() => handleProjectClick(project.id)}
+                    onClick={() => handleProjectClick(project)}
                   >
                     <div className="relative h-48 overflow-hidden">
                       <Image

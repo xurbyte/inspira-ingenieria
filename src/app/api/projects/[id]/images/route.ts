@@ -1,77 +1,96 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFile, writeFile, unlink } from 'fs/promises'
-import { existsSync } from 'fs'
-import path from 'path'
-import { Project, ProjectImage } from '@/types/project'
+import { v2 as cloudinary } from 'cloudinary'
+import { getProjectService } from '@/lib/dependency-injection'
+import { DatabaseProject } from '@/types/database'
 
-async function updateProjectImages(category: string, projectId: string, imageToDelete: string) {
-  const jsonPath = path.join(process.cwd(), 'src', 'data', `${category}.json`)
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+})
 
+async function deleteImageFromCloudinary(imageUrl: string): Promise<boolean> {
   try {
-    const jsonContent = await readFile(jsonPath, 'utf-8')
-    const projects = JSON.parse(jsonContent)
-
-    const projectIndex = projects.findIndex((p: Project) => p.id === projectId)
-    if (projectIndex === -1) {
-      return false
+    const urlParts = imageUrl.split('/')
+    const filename = urlParts[urlParts.length - 1]
+    const publicIdWithExtension = filename.split('.')[0]
+    
+    const folderStartIndex = urlParts.findIndex(part => part === 'inspira-ingenieria')
+    if (folderStartIndex === -1) {
+      throw new Error('Invalid Cloudinary URL format')
     }
-
-    const project = projects[projectIndex]
-
-    if (project.images) {
-      project.images = project.images.filter((img: ProjectImage) => img.src !== imageToDelete)
-    }
-
-    projects[projectIndex] = project
-
-    await writeFile(jsonPath, JSON.stringify(projects, null, 2))
-
+    
+    const folderParts = urlParts.slice(folderStartIndex, -1)
+    const publicId = `${folderParts.join('/')}/${publicIdWithExtension}`
+    
+    await cloudinary.uploader.destroy(publicId)
     return true
   } catch (error) {
-    console.error('Error updating project images:', error)
+    console.error('Error deleting image from Cloudinary:', error)
     return false
   }
 }
 
-async function deleteImageFile(imagePath: string) {
+async function updateProjectImages(projectId: string, imageToDelete: string): Promise<DatabaseProject | null> {
   try {
-    const fullPath = path.join(process.cwd(), 'public', imagePath)
-    if (existsSync(fullPath)) {
-      await unlink(fullPath)
-      return true
+    const projectService = getProjectService()
+    const project = await projectService.getProjectById(projectId)
+    
+    if (!project) {
+      return null
     }
-    return false
+
+    const updatedImages = project.images.filter(img => img.src !== imageToDelete)
+    
+    const updatedProject = await projectService.updateProject({
+      id: projectId,
+      images: updatedImages
+    })
+    
+    return updatedProject
   } catch (error) {
-    console.error('Error deleting image file:', error)
-    return false
+    console.error('Error updating project images:', error)
+    return null
   }
 }
+
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: projectId } = await params
     const { searchParams } = new URL(request.url)
-    const category = searchParams.get('category')
     const imagePath = searchParams.get('imagePath')
 
-    if (!category || !imagePath) {
-      return NextResponse.json({ error: 'Category and imagePath parameters are required' }, { status: 400 })
+    if (!imagePath) {
+      return NextResponse.json({ error: 'imagePath parameter is required' }, { status: 400 })
     }
 
-    const jsonSuccess = await updateProjectImages(category, projectId, imagePath)
-    if (!jsonSuccess) {
+    if (imagePath.includes('cloudinary.com')) {
+      const cloudinarySuccess = await deleteImageFromCloudinary(imagePath)
+      if (!cloudinarySuccess) {
+        console.warn('Failed to delete image from Cloudinary, but continuing with database update')
+      }
+    }
+
+    const updatedProject = await updateProjectImages(projectId, imagePath)
+    if (!updatedProject) {
       return NextResponse.json({ error: 'Failed to update project data' }, { status: 500 })
     }
 
-    await deleteImageFile(imagePath)
-
     return NextResponse.json({
       message: 'Image deleted successfully',
-      deletedImage: imagePath
+      deletedImage: imagePath,
+      project: updatedProject
     }, { status: 200 })
 
   } catch (error) {
     console.error('Error deleting image:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: errorMessage 
+    }, { status: 500 })
   }
 }

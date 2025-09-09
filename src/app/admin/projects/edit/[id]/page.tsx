@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/toast'
+import { useConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { ArrowLeft, Upload, X, Plus, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -81,6 +83,8 @@ export default function EditProject() {
   const searchParams = useSearchParams()
   const params = useParams()
   const projectId = params.id as string
+  const { showToast } = useToast()
+  const { showConfirmation, ConfirmationDialog } = useConfirmationDialog()
 
   useEffect(() => {
     const auth = localStorage.getItem('adminAuth')
@@ -127,11 +131,12 @@ export default function EditProject() {
           detailImages: []
         })
       } else {
+        console.error('Project not found in projects array:', { id, projects: projects.length })
         throw new Error('Proyecto no encontrado')
       }
     } catch (error) {
       console.error('Error loading project:', error)
-      alert(error instanceof Error ? error.message : 'Error al cargar el proyecto')
+      showToast('error', 'Error al cargar proyecto', error instanceof Error ? error.message : 'Error al cargar el proyecto')
     } finally {
       setLoadingProject(false)
     }
@@ -214,25 +219,36 @@ export default function EditProject() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Error al actualizar el proyecto')
+        console.error('Update API error:', errorData)
+        throw new Error(errorData.error || 'Failed to update project data')
       }
 
-      alert('Proyecto actualizado exitosamente!')
-      router.push('/admin/dashboard')
+      showToast('success', 'Proyecto actualizado exitosamente', `El proyecto "${formData.title}" ha sido actualizado correctamente.`)
+      
+      setTimeout(() => {
+        router.push('/admin/dashboard')
+      }, 1500)
       
     } catch (error) {
       console.error('Error updating project:', error)
-      alert(error instanceof Error ? error.message : 'Error al actualizar el proyecto. Por favor, intenta nuevamente.')
+      showToast('error', 'Error al actualizar proyecto', error instanceof Error ? error.message : 'Error al actualizar el proyecto. Por favor, intenta nuevamente.')
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleDeleteImage = async (imagePath: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta imagen? Esta acción no se puede deshacer.')) {
-      return
-    }
+    showConfirmation({
+      title: 'Eliminar imagen',
+      description: '¿Estás seguro de que quieres eliminar esta imagen? Esta acción no se puede deshacer.',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+      onConfirm: () => deleteImageConfirmed(imagePath)
+    })
+  }
 
+  const deleteImageConfirmed = async (imagePath: string) => {
     setIsLoading(true)
     try {
       const response = await fetch(`/api/projects/${projectId}/images?category=${category}&imagePath=${encodeURIComponent(imagePath)}`, {
@@ -253,21 +269,28 @@ export default function EditProject() {
         }
       })
 
-      alert('Imagen eliminada exitosamente!')
+      showToast('success', 'Imagen eliminada exitosamente', 'La imagen ha sido eliminada correctamente.')
       
     } catch (error) {
       console.error('Error deleting image:', error)
-      alert(error instanceof Error ? error.message : 'Error al eliminar la imagen. Por favor, intenta nuevamente.')
+      showToast('error', 'Error al eliminar imagen', error instanceof Error ? error.message : 'Error al eliminar la imagen. Por favor, intenta nuevamente.')
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleDelete = async () => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este proyecto? Esta acción no se puede deshacer.')) {
-      return
-    }
+    showConfirmation({
+      title: 'Eliminar proyecto',
+      description: `¿Estás seguro de que quieres eliminar el proyecto "${project?.title}"? Esta acción no se puede deshacer.`,
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+      onConfirm: () => deleteProjectConfirmed()
+    })
+  }
 
+  const deleteProjectConfirmed = async () => {
     setIsLoading(true)
     try {
       const response = await fetch(`/api/projects/${projectId}?category=${category}`, {
@@ -279,12 +302,15 @@ export default function EditProject() {
         throw new Error(errorData.error || 'Error al eliminar el proyecto')
       }
 
-      alert('Proyecto eliminado exitosamente!')
-      router.push('/admin/dashboard')
+      showToast('success', 'Proyecto eliminado exitosamente', `El proyecto "${project?.title}" ha sido eliminado correctamente.`)
+      
+      setTimeout(() => {
+        router.push('/admin/dashboard')
+      }, 1500)
       
     } catch (error) {
       console.error('Error deleting project:', error)
-      alert(error instanceof Error ? error.message : 'Error al eliminar el proyecto. Por favor, intenta nuevamente.')
+      showToast('error', 'Error al eliminar proyecto', error instanceof Error ? error.message : 'Error al eliminar el proyecto. Por favor, intenta nuevamente.')
     } finally {
       setIsLoading(false)
     }
@@ -671,6 +697,7 @@ export default function EditProject() {
           </CardContent>
         </Card>
       </div>
+      <ConfirmationDialog />
     </div>
   )
 }

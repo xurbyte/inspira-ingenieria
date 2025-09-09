@@ -49,6 +49,7 @@ const tasaOrbiter = localFont({
 export const metadata: Metadata = {
   title: "Inspira Ingeniería",
   description: "Inspiración en Ingeniería",
+  keywords: ["Inspira Ingeniería", "Inspiración en Ingeniería", "Ingeniería", "Inspira Ingeniería"],
 };
 
 export default function RootLayout({
