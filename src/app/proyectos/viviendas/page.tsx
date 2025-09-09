@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
@@ -8,30 +8,22 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Home, Hammer, TreePine } from "lucide-react"
 import { DatabaseProject } from "@/types/database"
+import { useProjects } from "@/contexts/projects-context"
 
 export default function ViviendasPage() {
   const router = useRouter()
   const [selectedType, setSelectedType] = useState<"tradicional" | "steelframe" | "woodframe">("tradicional")
-  const [projects, setProjects] = useState<DatabaseProject[]>([])
-  const [loading, setLoading] = useState(true)
+  const { projects: allProjects, loading } = useProjects()
+  const projects = allProjects.viviendas
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch(`/api/projects?category=viviendas`)
-        const data = await response.json()
-        setProjects(data.projects || [])
-      } catch {
-        setProjects([])
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Group projects by type
+  const projectsByType = {
+    tradicional: projects.filter(p => p.type === "tradicional"),
+    steelframe: projects.filter(p => p.type === "steelframe"),
+    woodframe: projects.filter(p => p.type === "woodframe"),
+  }
 
-    fetchProjects()
-  }, [])
-
-  const filteredProjects = projects
+  const filteredProjects = projectsByType[selectedType]
 
   const handleProjectClick = (project: DatabaseProject) => {
     router.push(`/proyectos/viviendas/${project.slug}`)
@@ -84,7 +76,10 @@ export default function ViviendasPage() {
           {/* Loading State */}
           {loading && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Cargando proyectos...</p>
+              <div className="inline-flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <p className="text-muted-foreground font-medium">Cargando proyectos...</p>
+              </div>
             </div>
           )}
 
@@ -96,10 +91,14 @@ export default function ViviendasPage() {
                   <p className="text-muted-foreground">No hay proyectos de este tipo disponibles.</p>
                 </div>
               ) : (
-                filteredProjects.map((project: DatabaseProject) => (
+                filteredProjects.map((project: DatabaseProject, index: number) => (
                   <Card
                     key={project.id}
-                    className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30"
+                    className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30 animate-fade-in"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                      animationFillMode: 'both'
+                    }}
                     onClick={() => handleProjectClick(project)}
                   >
                     <div className="relative h-48 overflow-hidden">
@@ -108,6 +107,9 @@ export default function ViviendasPage() {
                         alt={project.coverImage.alt}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                        priority={index < 3}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                       <div className="absolute top-4 right-4">

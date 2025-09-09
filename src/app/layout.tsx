@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ToastProvider } from "@/components/ui/toast";
+import { ProjectsProvider } from "@/contexts/projects-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -63,7 +64,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${tasaOrbiter.variable} antialiased font-[family-name:var(--font-tasa-orbiter)]`}
       >
         <ToastProvider>
-          {children}
+          <ProjectsProvider>
+            {children}
+          </ProjectsProvider>
         </ToastProvider>
       </body>
     </html>
