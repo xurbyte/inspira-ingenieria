@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -86,21 +86,7 @@ export default function EditProject() {
   const { showToast } = useToast()
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog()
 
-  useEffect(() => {
-    const auth = localStorage.getItem('adminAuth')
-    if (auth !== 'true') {
-      router.push('/admin')
-    } else {
-      setIsAuthenticated(true)
-      const categoryParam = searchParams.get('category')
-      if (categoryParam) {
-        setCategory(categoryParam)
-        loadProject(categoryParam, projectId)
-      }
-    }
-  }, [router, searchParams, projectId])
-
-  const loadProject = async (cat: string, id: string) => {
+  const loadProject = useCallback(async (cat: string, id: string) => {
     setLoadingProject(true)
     try {
       const response = await fetch(`/api/projects?category=${cat}`)
@@ -140,7 +126,21 @@ export default function EditProject() {
     } finally {
       setLoadingProject(false)
     }
-  }
+  }, [showToast])
+
+  useEffect(() => {
+    const auth = localStorage.getItem('adminAuth')
+    if (auth !== 'true') {
+      router.push('/admin')
+    } else {
+      setIsAuthenticated(true)
+      const categoryParam = searchParams.get('category')
+      if (categoryParam) {
+        setCategory(categoryParam)
+        loadProject(categoryParam, projectId)
+      }
+    }
+  }, [router, searchParams, projectId, loadProject])
 
   const getTypeOptions = () => {
     switch (category) {
