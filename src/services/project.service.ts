@@ -102,11 +102,7 @@ export class ProjectService implements IProjectService {
     if (data.year !== undefined && (!data.year || data.year.trim().length === 0)) {
       errors.push('Year is required')
     }
-    
-    if (data.system !== undefined && (!data.system || data.system.trim().length === 0)) {
-      errors.push('System is required')
-    }
-    
+        
     if (data.description !== undefined && (!data.description || data.description.trim().length === 0)) {
       errors.push('Description is required')
     }

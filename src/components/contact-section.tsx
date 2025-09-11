@@ -12,12 +12,16 @@ import { Mail, Phone, MapPin, Instagram, Linkedin, MessageCircle } from "lucide-
 export function ContactSection() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [formStartTime, setFormStartTime] = useState<number>(Date.now())
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     project: "",
     message: "",
+    honeypot: "", // Hidden field to catch bots
   })
 
   useEffect(() => {
@@ -37,13 +41,85 @@ export function ContactSection() {
     return () => observer.disconnect()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the form data to your backend
-    // Form submitted
-    // For now, we'll just show an alert
-    alert("Gracias por tu consulta. Te contactaremos pronto.")
-    setFormData({ name: "", email: "", phone: "", project: "", message: "" })
+    setIsSubmitting(true)
+    setSubmitMessage(null)
+
+    // Client-side validation
+    const errors: string[] = []
+
+    // Check minimum form completion time (3 seconds to prevent bots)
+    const timeElapsed = Date.now() - formStartTime
+    if (timeElapsed < 3000) {
+      errors.push('Por favor, toma un momento para completar el formulario.')
+    }
+
+    // Validate name
+    if (!formData.name.trim()) {
+      errors.push('El nombre es requerido.')
+    } else if (formData.name.trim().length < 2) {
+      errors.push('El nombre debe tener al menos 2 caracteres.')
+    } else if (formData.name.trim().length > 100) {
+      errors.push('El nombre es demasiado largo.')
+    }
+
+    // Validate email
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+    if (!formData.email.trim()) {
+      errors.push('El email es requerido.')
+    } else if (!emailRegex.test(formData.email.trim())) {
+      errors.push('Formato de email inválido.')
+    }
+
+    // Validate phone if provided
+    if (formData.phone.trim()) {
+      const phoneRegex = /^[\+]?[0-9\s\-\(\)]{8,20}$/
+      if (!phoneRegex.test(formData.phone.trim())) {
+        errors.push('Formato de teléfono inválido.')
+      }
+    }
+
+    // Validate message
+    if (!formData.message.trim()) {
+      errors.push('El mensaje es requerido.')
+    } else if (formData.message.trim().length < 10) {
+      errors.push('El mensaje debe tener al menos 10 caracteres.')
+    } else if (formData.message.trim().length > 2000) {
+      errors.push('El mensaje es demasiado largo (máximo 2000 caracteres).')
+    }
+
+    // If there are validation errors, show them
+    if (errors.length > 0) {
+      setSubmitMessage({ type: 'error', text: errors.join(' ') })
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSubmitMessage({ type: 'success', text: data.message })
+        setFormData({ name: "", email: "", phone: "", project: "", message: "", honeypot: "" })
+        setFormStartTime(Date.now()) // Reset timer for next submission
+      } else {
+        setSubmitMessage({ type: 'error', text: data.error || 'Error al enviar la consulta. Inténtalo de nuevo.' })
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setSubmitMessage({ type: 'error', text: 'Error de conexión. Verifica tu conexión a internet e intenta de nuevo.' })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -159,9 +235,41 @@ export function ContactSection() {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full mt-6">
-                      Enviar consulta
+                    {/* Honeypot field - hidden from humans but visible to bots */}
+                    <div className="sr-only" aria-hidden="true">
+                      <label htmlFor="honeypot">
+                        No completar este campo (es para detectar spam):
+                      </label>
+                      <Input
+                        id="honeypot"
+                        name="honeypot"
+                        type="text"
+                        value={formData.honeypot}
+                        onChange={handleChange}
+                        placeholder="Campo anti-spam"
+                        tabIndex={-1}
+                        autoComplete="off"
+                      />
+                    </div>
+
+                    <Button type="submit" className="w-full mt-6" disabled={isSubmitting}>
+                      {isSubmitting ? 'Enviando...' : 'Enviar consulta'}
                     </Button>
+
+                    {submitMessage && (
+                      <div
+                        className={`mt-4 p-4 rounded-md ${
+                          submitMessage.type === 'success'
+                            ? 'bg-green-50 text-green-800 border border-green-200'
+                            : 'bg-red-50 text-red-800 border border-red-200'
+                        }`}
+                      >
+                        <p className="text-sm font-medium">
+                          {submitMessage.type === 'success' ? '✅ ' : '❌ '}
+                          {submitMessage.text}
+                        </p>
+                      </div>
+                    )}
                   </form>
                 </CardContent>
               </Card>

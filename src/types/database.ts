@@ -9,7 +9,6 @@ export interface ProjectSpecs {
   system: string
   foundations: string
   structure: string
-  roof?: string
   normative: string
 }
 
@@ -20,7 +19,6 @@ export interface DatabaseProject {
   architect: string
   location: string
   year: string
-  system: string
   description: string
   challenge: string
   solution: string
@@ -40,7 +38,6 @@ export interface CreateProjectData {
   architect: string
   location: string
   year: string
-  system: string
   description: string
   challenge: string
   solution: string

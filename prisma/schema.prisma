@@ -16,7 +16,6 @@ model Project {
   architect   String
   location    String
   year        String
-  system      String
   description String   @db.Text
   challenge   String   @db.Text
   solution    String   @db.Text
@@ -26,7 +25,7 @@ model Project {
   area        String?
   coverImage  Json     // {src: string, alt: string}
   images      Json[]   // Array of {src: string, alt: string}
-  specs       Json     // {system: string, foundations: string, structure: string, roof?: string, normative: string}
+  specs       Json     // {system: string, foundations: string, structure: string, normative: string}
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

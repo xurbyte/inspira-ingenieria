@@ -22,7 +22,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Proyecto no encontrado</h1>
           <Link href="/proyectos/naves-industriales">
-            <Button>
+            <Button variant="ghost" className="hover:bg-primary/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver a Naves Industriales
             </Button>

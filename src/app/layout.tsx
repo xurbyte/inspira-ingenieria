@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ToastProvider } from "@/components/ui/toast";
 import { ProjectsProvider } from "@/contexts/projects-context";
+import { ConditionalViewTransition } from "@/components/conditional-view-transition";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -48,9 +49,43 @@ const tasaOrbiter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Inspira Ingeniería",
-  description: "Inspiración en Ingeniería",
-  keywords: ["Inspira Ingeniería", "Inspiración en Ingeniería", "Ingeniería", "Inspira Ingeniería"],
+  title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
+  description:
+    "Inspira: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
+  keywords: [
+    "ingeniería civil Puerto Madryn",
+    "estudio ingeniería Chubut",
+    "diseño estructural Argentina",
+    "consultoría ingeniería Madryn",
+    "proyectos civiles sostenibles",
+    "Inspira Ingeniería",
+  ],
+  robots: "index, follow",
+  viewport: "width=device-width, initial-scale=1",
+  openGraph: {
+    title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
+    description:
+      "Inspira: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
+    url: "https://www.inspiracivil.com", // Cambia a tu dominio real
+    siteName: "Inspira Ingeniería",
+    images: [
+      {
+        url: "/images/inspira-og-image.jpg", // Asegúrate de tener una imagen optimizada (1200x630px)
+        width: 1200,
+        height: 630,
+        alt: "Inspira Ingeniería Civil en Puerto Madryn",
+      },
+    ],
+    locale: "es_AR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
+    description:
+      "Expertos en ingeniería civil en Puerto Madryn, Chubut. Diseño estructural y consultoría sostenible.",
+    images: ["/images/inspira-og-image.jpg"],
+  },
 };
 
 export default function RootLayout({
@@ -65,7 +100,9 @@ export default function RootLayout({
       >
         <ToastProvider>
           <ProjectsProvider>
-            {children}
+            <ConditionalViewTransition>
+              {children}
+            </ConditionalViewTransition>
           </ProjectsProvider>
         </ToastProvider>
       </body>

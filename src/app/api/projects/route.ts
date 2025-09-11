@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
     const architect = formData.get('architect') as string
     const location = formData.get('location') as string
     const year = formData.get('year') as string
-    const system = formData.get('system') as string
     const description = formData.get('description') as string
     const challenge = formData.get('challenge') as string
     const solution = formData.get('solution') as string
@@ -41,7 +40,6 @@ export async function POST(request: NextRequest) {
     const specsSystem = formData.get('specs.system') as string
     const specsFoundations = formData.get('specs.foundations') as string
     const specsStructure = formData.get('specs.structure') as string
-    const specsRoof = formData.get('specs.roof') as string
     const specsNormative = formData.get('specs.normative') as string
     
     const projectSlug = projectService.generateSlug(title)
@@ -121,7 +119,6 @@ export async function POST(request: NextRequest) {
       architect,
       location,
       year,
-      system,
       description,
       challenge,
       solution,
@@ -138,7 +135,6 @@ export async function POST(request: NextRequest) {
         system: specsSystem,
         foundations: specsFoundations,
         structure: specsStructure,
-        roof: specsRoof,
         normative: specsNormative
       }
     }

@@ -5,24 +5,24 @@ import { ProjectRepository } from '@/repositories/project.repository'
 export async function GET() {
   try {
     const projectRepository = container.resolve<ProjectRepository>('ProjectRepository')
-    
-    // Fetch all projects in a single database query
+
     const allProjects = await projectRepository.findAll()
-    
+
     return NextResponse.json({
       success: true,
-      projects: allProjects,
-      count: allProjects.length
+      projects: allProjects || [],
+      count: allProjects?.length || 0
     })
   } catch (error) {
     console.error('Error fetching all projects:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Error al cargar proyectos',
-        projects: []
+        projects: [],
+        count: 0
       },
-      { status: 500 }
+      { status: 200 } // Cambiar a 200 para que el frontend lo maneje
     )
   }
 }

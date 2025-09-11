@@ -46,13 +46,18 @@ type ProjectFormData = {
   architect: string
   location: string
   year: string
-  system: string
   type: string
   area: string
   description: string
   challenge: string
   solution: string
   result: string
+  specs: {
+    system: string
+    foundations: string
+    structure: string
+    normative: string
+  }
   coverImage: File | null
   detailImages: File[]
 }
@@ -68,13 +73,18 @@ export default function EditProject() {
     architect: '',
     location: '',
     year: '',
-    system: '',
     type: '',
     area: '',
     description: '',
     challenge: '',
     solution: '',
     result: '',
+    specs: {
+      system: '',
+      foundations: '',
+      structure: '',
+      normative: ''
+    },
     coverImage: null,
     detailImages: []
   })
@@ -106,13 +116,18 @@ export default function EditProject() {
           architect: foundProject.architect,
           location: foundProject.location,
           year: foundProject.year,
-          system: foundProject.system,
           type: foundProject.type,
           area: foundProject.area,
           description: foundProject.description,
           challenge: foundProject.challenge || '',
           solution: foundProject.solution || '',
           result: foundProject.result || '',
+          specs: foundProject.specs || {
+            system: '',
+            foundations: '',
+            structure: '',
+            normative: ''
+          },
           coverImage: null,
           detailImages: []
         })
@@ -162,6 +177,16 @@ export default function EditProject() {
     }))
   }
 
+  const handleSpecsChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      specs: {
+        ...prev.specs,
+        [field]: value
+      }
+    }))
+  }
+
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -192,10 +217,8 @@ export default function EditProject() {
     setIsLoading(true)
 
     try {
-      // Create FormData for file upload
       const submitData = new FormData()
       
-      // Add all form fields
       Object.entries(formData).forEach(([key, value]) => {
         if (key === 'coverImage' && value instanceof File) {
           submitData.append('coverImage', value)
@@ -203,7 +226,11 @@ export default function EditProject() {
           (value as File[]).forEach((file, index) => {
             submitData.append(`detailImage_${index}`, file)
           })
-        } else if (typeof value === 'string') {
+        } else if (key === 'specs' && value && typeof value === 'object' && !Array.isArray(value)) {
+          Object.entries(value as { system: string; foundations: string; structure: string; normative: string }).forEach(([specKey, specValue]) => {
+            submitData.append(`specs.${specKey}`, specValue as string)
+          })
+        } else if (typeof value === 'string' && value !== null && value !== undefined) {
           submitData.append(key, value)
         }
       })
@@ -211,7 +238,6 @@ export default function EditProject() {
       submitData.append('category', category)
       submitData.append('projectId', projectId)
 
-      // Call API to update project
       const response = await fetch(`/api/projects/${projectId}`, {
         method: 'PUT',
         body: submitData
@@ -260,7 +286,6 @@ export default function EditProject() {
         throw new Error(errorData.error || 'Error al eliminar la imagen')
       }
 
-      // Update local project state to remove the deleted image
       setProject(prev => {
         if (!prev) return prev
         return {
@@ -429,17 +454,6 @@ export default function EditProject() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="system">Sistema Constructivo *</Label>
-                  <Input
-                    id="system"
-                    value={formData.system}
-                    onChange={(e) => handleInputChange('system', e.target.value)}
-                    placeholder="Ej: Hormigón armado"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="type">Tipo *</Label>
                   <select 
                     id="type"
@@ -457,7 +471,7 @@ export default function EditProject() {
                   </select>
                 </div>
 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                   <Label htmlFor="area">Área *</Label>
                   <Input
                     id="area"
@@ -514,6 +528,52 @@ export default function EditProject() {
                     placeholder="Resultados obtenidos..."
                     rows={3}
                   />
+                </div>
+              </div>
+
+              {/* Technical Specifications */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">Especificaciones Técnicas</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="specs_system">Sistema Estructural</Label>
+                    <Input
+                      id="specs_system"
+                      value={formData.specs.system}
+                      onChange={(e) => handleSpecsChange('system', e.target.value)}
+                      placeholder="Ej: Hormigón armado con acero corrugado"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="specs_foundations">Fundaciones</Label>
+                    <Input
+                      id="specs_foundations"
+                      value={formData.specs.foundations}
+                      onChange={(e) => handleSpecsChange('foundations', e.target.value)}
+                      placeholder="Ej: Zapatas aisladas y corridas"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="specs_structure">Estructura Principal</Label>
+                    <Input
+                      id="specs_structure"
+                      value={formData.specs.structure}
+                      onChange={(e) => handleSpecsChange('structure', e.target.value)}
+                      placeholder="Ej: Vigas y columnas de hormigón armado"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="specs_normative">Normativa Aplicada</Label>
+                    <Input
+                      id="specs_normative"
+                      value={formData.specs.normative}
+                      onChange={(e) => handleSpecsChange('normative', e.target.value)}
+                      placeholder="Ej: CIRSOC 201 - 2005"
+                    />
+                  </div>
                 </div>
               </div>
 

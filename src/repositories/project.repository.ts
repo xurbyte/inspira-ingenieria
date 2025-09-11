@@ -97,7 +97,6 @@ export class ProjectRepository implements IProjectRepository {
       architect: project.architect,
       location: project.location,
       year: project.year,
-      system: project.system,
       description: project.description,
       challenge: project.challenge,
       solution: project.solution,
@@ -107,9 +106,20 @@ export class ProjectRepository implements IProjectRepository {
       area: project.area,
       coverImage: project.coverImage as unknown as ProjectImage,
       images: project.images as unknown as ProjectImage[],
-      specs: project.specs as unknown as ProjectSpecs,
+      specs: this.mapPrismaSpecsToProjectSpecs(project.specs),
       createdAt: project.createdAt,
       updatedAt: project.updatedAt
+    }
+  }
+
+  private mapPrismaSpecsToProjectSpecs(prismaSpecs: unknown): ProjectSpecs {
+    const specs = prismaSpecs as Record<string, unknown>
+
+    return {
+      system: (specs.system as string) || '',
+      foundations: (specs.foundations as string) || '',
+      structure: (specs.structure as string) || '',
+      normative: (specs.normative as string) || ''
     }
   }
 

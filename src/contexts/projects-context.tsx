@@ -30,7 +30,6 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
       setLoading(true)
       setError(null)
 
-      // Fetch all projects in a single request for better performance
       const response = await fetch('/api/projects/all')
       const data = await response.json()
 
@@ -38,7 +37,6 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
         throw new Error(data.error || 'Error al cargar proyectos')
       }
 
-      // Group projects by category
       const projectsByCategory = {
         viviendas: [] as DatabaseProject[],
         'naves-industriales': [] as DatabaseProject[],

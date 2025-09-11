@@ -112,17 +112,19 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const architect = formData.get('architect') as string
     const location = formData.get('location') as string
     const year = formData.get('year') as string
-    const system = formData.get('system') as string
     const type = formData.get('type') as string
     const area = formData.get('area') as string
     const description = formData.get('description') as string
     const challenge = formData.get('challenge') as string
+    const solution = formData.get('solution') as string
     const result = formData.get('result') as string
     const category = formData.get('category') as string
     
-    if (!title || !architect || !location || !year || !system || !type || !area || !description || !category) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-    }
+    // Extract specs from form data
+    const specsSystem = formData.get('specs.system') as string
+    const specsFoundations = formData.get('specs.foundations') as string
+    const specsStructure = formData.get('specs.structure') as string
+    const specsNormative = formData.get('specs.normative') as string
     
     const projectService = getProjectService()
     const currentProject = await projectService.getProjectById(projectId)
@@ -157,7 +159,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       architect,
       location,
       year,
-      system,
       type,
       area,
       coverImage: {
@@ -170,11 +171,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       })),
       description,
       challenge: challenge || '',
-      solution: currentProject.solution,
+      solution: solution || '',
       result: result || '',
       specs: {
-        ...currentProject.specs,
-        system
+        system: specsSystem || currentProject.specs?.system || '',
+        foundations: specsFoundations || currentProject.specs?.foundations || '',
+        structure: specsStructure || currentProject.specs?.structure || '',
+        normative: specsNormative || currentProject.specs?.normative || ''
       }
     }
     

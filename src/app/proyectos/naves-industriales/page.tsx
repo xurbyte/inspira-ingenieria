@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { DatabaseProject } from "@/types/database";
 import { useProjects } from "@/contexts/projects-context";
 
@@ -55,34 +55,51 @@ export default function NavesIndustrialesPage() {
                 projects.map((project, index) => (
                   <Card
                     key={project.id}
-                    className="group cursor-pointer overflow-hidden py-0 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-background border-primary/30 animate-fade-in"
-                    style={{
-                      animationDelay: `${index * 100}ms`,
-                      animationFillMode: 'both'
-                    }}
+                    className="group cursor-pointer overflow-hidden py-0 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-background border-primary/30 shadow-md hover:shadow-primary/20"
                     onClick={() => handleProjectClick(project)}
                   >
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-56 overflow-hidden">
                       <Image
                         src={project.coverImage.src || "/placeholder.svg"}
                         alt={project.coverImage.alt}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
                         placeholder="blur"
                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                         priority={index < 3}
+                        style={{
+                          viewTransitionName: `project-cover-${project.id}`
+                        }}
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent group-hover:bg-gradient-to-t group-hover:from-black/40 transition-all duration-300" />
                       <div className="absolute top-4 right-4">
-                        <Badge variant="secondary">{project.year}</Badge>
+                        <Badge 
+                          variant="secondary" 
+                          className="bg-white/90 text-foreground shadow-lg"
+                          style={{
+                            viewTransitionName: `project-year-${project.id}`
+                          }}
+                        >
+                          {project.year}
+                        </Badge>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 
+                          className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300 uppercase leading-tight"
+                          style={{
+                            viewTransitionName: `project-title-${project.id}`
+                          }}
+                        >
+                          {project.title}
+                        </h3>
+                        <div 
+                          className="flex items-center text-white/90 text-sm font-medium"
+                        >
+                          <MapPin className="h-4 w-4 mr-2" />
+                          {project.location}
+                        </div>
                       </div>
                     </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors uppercase">
-                        {project.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-semibold">{project.description}</p>
-                    </CardContent>
                   </Card>
                 ))
               )}
