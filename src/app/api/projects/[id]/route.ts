@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { v2 as cloudinary } from 'cloudinary'
 import { getProjectService } from '@/lib/dependency-injection'
 import { UpdateProjectData, DatabaseProject, ProjectImage } from '@/types/database'
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+import { cloudinaryService } from '@/lib/cloudinary-service'
 
 async function uploadImageToCloudinary(
-  file: File, 
-  category: string, 
-  projectSlug: string, 
+  file: File,
+  category: string,
+  projectSlug: string,
   imageType: 'cover' | 'additional',
   imageIndex?: number
 ): Promise<string> {
@@ -25,82 +19,31 @@ async function uploadImageToCloudinary(
     throw new Error(`File ${file.name} has invalid type. Only JPEG, PNG, and WebP are allowed.`)
   }
 
-  const bytes = await file.arrayBuffer()
-  const buffer = Buffer.from(bytes)
-
   try {
     let folder: string
     let publicId: string
 
     if (imageType === 'cover') {
-      folder = `inspira-ingenieria/${category}/${projectSlug}`
+      folder = cloudinaryService.getProjectFolder(category, projectSlug)
       publicId = 'cover'
     } else {
-      folder = `inspira-ingenieria/${category}/${projectSlug}/images`
+      folder = `${cloudinaryService.getProjectFolder(category, projectSlug)}/images`
       publicId = `image-${imageIndex! + 1}`
     }
 
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'image',
-          folder: folder,
-          public_id: publicId,
-          transformation: [
-            { quality: 'auto', fetch_format: 'auto' },
-            { width: 1200, height: 800, crop: 'limit' }
-          ]
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result)
-        }
-      ).end(buffer)
+    const uploadResult = await cloudinaryService.uploadImage(file, {
+      folder: folder,
+      publicId: publicId
     })
 
-    return (uploadResult as { secure_url: string }).secure_url
+    return uploadResult.secure_url
   } catch (error) {
     throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
 
-async function deleteCloudinaryImages(project: DatabaseProject, category: string, projectId: string) {
-  try {
-    const categoryFolderMap: { [key: string]: string } = {
-      'viviendas': 'Vivienda',
-      'naves-industriales': 'Nave industrial',
-      'funcional': 'Funcional'
-    }
-    
-    const categoryFolder = categoryFolderMap[category] || category
-    const folderPath = `inspira-ingenieria/${categoryFolder}/${projectId}`
-    
-    await cloudinary.api.delete_resources_by_prefix(folderPath)
-    
-    try {
-      await cloudinary.api.delete_folder(`${folderPath}/portada`)
-    } catch {
-    }
-    
-    try {
-      await cloudinary.api.delete_folder(`${folderPath}/adentro`)
-    } catch {
-    }
-    
-    try {
-      await cloudinary.api.delete_folder(folderPath)
-    } catch {
-      try {
-        await cloudinary.api.delete_resources_by_prefix(folderPath, { type: 'upload', resource_type: 'image' })
-        await cloudinary.api.delete_folder(folderPath)
-      } catch {
-      }
-    }
-    
-    return true
-  } catch {
-    return false
-  }
+async function deleteCloudinaryImages(project: DatabaseProject, category: string) {
+  return cloudinaryService.deleteProjectImages(project, category)
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -224,7 +167,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
                                   project.images.some(img => img.src.includes('cloudinary.com'))
       
       if (hasCloudinaryImages) {
-        const cloudinarySuccess = await deleteCloudinaryImages(project, category, projectId)
+        const cloudinarySuccess = await deleteCloudinaryImages(project, category)
         if (!cloudinarySuccess) {
           console.warn('Failed to delete images from Cloudinary, but continuing with project deletion')
         }

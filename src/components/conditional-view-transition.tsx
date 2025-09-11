@@ -2,7 +2,7 @@
 
 import { unstable_ViewTransition as ViewTransition } from 'react';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface ConditionalViewTransitionProps {
   children: React.ReactNode;
@@ -10,13 +10,13 @@ interface ConditionalViewTransitionProps {
 
 export function ConditionalViewTransition({ children }: ConditionalViewTransitionProps) {
   const pathname = usePathname();
-  const [previousPath, setPreviousPath] = useState<string>('');
+  const previousPathRef = useRef<string>('');
 
   useEffect(() => {
-    setPreviousPath(pathname);
+    previousPathRef.current = pathname;
   }, [pathname]);
 
-  // Enable view transitions only for navigation from project listing pages to detail pages
+  // Enable view transitions for navigation between project pages
   const shouldEnableTransitions = (() => {
     // Current path patterns for project listings
     const projectListingPatterns = [
@@ -31,10 +31,22 @@ export function ConditionalViewTransition({ children }: ConditionalViewTransitio
     // Check if current path is a project detail page
     const isCurrentDetailPage = projectDetailPattern.test(pathname);
 
-    // Check if previous path was a project listing page
-    const wasPreviousListingPage = projectListingPatterns.some(pattern => pattern.test(previousPath));
+    // Check if current path is a project listing page
+    const isCurrentListingPage = projectListingPatterns.some(pattern => pattern.test(pathname));
 
-    return isCurrentDetailPage && wasPreviousListingPage;
+    // Check if previous path was a project listing page
+    const wasPreviousListingPage = projectListingPatterns.some(pattern => pattern.test(previousPathRef.current));
+
+    // Check if previous path was a project detail page
+    const wasPreviousDetailPage = projectDetailPattern.test(previousPathRef.current);
+
+    // Enable transitions for:
+    // 1. Listing page → Detail page
+    // 2. Detail page → Listing page
+    const isValidTransition = (isCurrentDetailPage && wasPreviousListingPage) ||
+                             (isCurrentListingPage && wasPreviousDetailPage);
+
+    return isValidTransition;
   })();
 
   if (shouldEnableTransitions) {
