@@ -8,10 +8,8 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value
   const { pathname } = req.nextUrl
 
-  // Rutas que requieren auth
-  const protectedPaths = ['/admin/dashboard', '/admin/projects', '/api/projects']
-
-  if (protectedPaths.some(p => pathname.startsWith(p))) {
+  // Proteger todo /admin
+  if (pathname.startsWith('/admin')) {
     if (!token) {
       return NextResponse.redirect(new URL('/admin', req.url))
     }
@@ -20,6 +18,19 @@ export function middleware(req: NextRequest) {
       return NextResponse.next()
     } catch {
       return NextResponse.redirect(new URL('/admin', req.url))
+    }
+  }
+
+  // Proteger solo /api/projects excepto /api/projects/all
+  if (pathname.startsWith('/api/projects') && !pathname.endsWith('/all')) {
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    try {
+      jwt.verify(token, SECRET)
+      return NextResponse.next()
+    } catch {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
   }
 
