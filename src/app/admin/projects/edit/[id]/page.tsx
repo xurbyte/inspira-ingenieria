@@ -63,7 +63,6 @@ type ProjectFormData = {
 }
 
 export default function EditProject() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [loadingProject, setLoadingProject] = useState(true)
   const [category, setCategory] = useState<string>('')
@@ -101,14 +100,14 @@ export default function EditProject() {
     try {
       const response = await fetch(`/api/projects?category=${cat}`)
       const data = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Error al cargar proyectos')
       }
 
       const projects = data.projects || []
       const foundProject = projects.find((p: Project) => p.id === id)
-      
+
       if (foundProject) {
         setProject(foundProject)
         setFormData({
@@ -144,18 +143,12 @@ export default function EditProject() {
   }, [showToast])
 
   useEffect(() => {
-    const auth = localStorage.getItem('adminAuth')
-    if (auth !== 'true') {
-      router.push('/admin')
-    } else {
-      setIsAuthenticated(true)
-      const categoryParam = searchParams.get('category')
-      if (categoryParam) {
-        setCategory(categoryParam)
-        loadProject(categoryParam, projectId)
-      }
+    const categoryParam = searchParams.get('category')
+    if (categoryParam) {
+      setCategory(categoryParam)
+      loadProject(categoryParam, projectId)
     }
-  }, [router, searchParams, projectId, loadProject])
+  }, [searchParams, projectId, loadProject])
 
   const getTypeOptions = () => {
     switch (category) {
@@ -218,7 +211,7 @@ export default function EditProject() {
 
     try {
       const submitData = new FormData()
-      
+
       Object.entries(formData).forEach(([key, value]) => {
         if (key === 'coverImage' && value instanceof File) {
           submitData.append('coverImage', value)
@@ -234,7 +227,7 @@ export default function EditProject() {
           submitData.append(key, value)
         }
       })
-      
+
       submitData.append('category', category)
       submitData.append('projectId', projectId)
 
@@ -250,11 +243,11 @@ export default function EditProject() {
       }
 
       showToast('success', 'Proyecto actualizado exitosamente', `El proyecto "${formData.title}" ha sido actualizado correctamente.`)
-      
+
       setTimeout(() => {
         router.push('/admin/dashboard')
       }, 1500)
-      
+
     } catch (error) {
       console.error('Error updating project:', error)
       showToast('error', 'Error al actualizar proyecto', error instanceof Error ? error.message : 'Error al actualizar el proyecto. Por favor, intenta nuevamente.')
@@ -295,7 +288,7 @@ export default function EditProject() {
       })
 
       showToast('success', 'Imagen eliminada exitosamente', 'La imagen ha sido eliminada correctamente.')
-      
+
     } catch (error) {
       console.error('Error deleting image:', error)
       showToast('error', 'Error al eliminar imagen', error instanceof Error ? error.message : 'Error al eliminar la imagen. Por favor, intenta nuevamente.')
@@ -328,21 +321,17 @@ export default function EditProject() {
       }
 
       showToast('success', 'Proyecto eliminado exitosamente', `El proyecto "${project?.title}" ha sido eliminado correctamente.`)
-      
+
       setTimeout(() => {
         router.push('/admin/dashboard')
       }, 1500)
-      
+
     } catch (error) {
       console.error('Error deleting project:', error)
       showToast('error', 'Error al eliminar proyecto', error instanceof Error ? error.message : 'Error al eliminar el proyecto. Por favor, intenta nuevamente.')
     } finally {
       setIsLoading(false)
     }
-  }
-
-  if (!isAuthenticated) {
-    return <div className="min-h-screen flex items-center justify-center">Verificando autenticación...</div>
   }
 
   if (loadingProject) {
@@ -455,9 +444,9 @@ export default function EditProject() {
 
                 <div className="space-y-2">
                   <Label htmlFor="type">Tipo *</Label>
-                  <select 
+                  <select
                     id="type"
-                    value={formData.type} 
+                    value={formData.type}
                     onChange={(e) => handleInputChange('type', e.target.value)}
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     required

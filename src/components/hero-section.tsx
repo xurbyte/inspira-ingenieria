@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { Calculator, Building2, Zap } from "lucide-react"
 import { useEffect, useState } from "react"
-import Image from "next/image"
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -24,13 +23,16 @@ export function HeroSection() {
       id="inicio"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
     >
-      <Image
+      {/* <Image
         src="/hero.jpg"
         alt="Inspira Ingeniería - Estructuras seguras en la Patagonia"
         fill
         className="object-cover -z-10"
         priority
-      />
+      /> */}
+      <video autoPlay loop muted className="absolute top-0 left-0 w-full h-full object-cover -z-10">
+        <source src="/videos/hero.mp4" type="video/mp4" />
+      </video>
       <div className="absolute inset-0 bg-black/80 -z-10" />
       <div className="container mx-auto px-4 pt-20 relative z-10">
         <div className="max-w-4xl mx-auto text-center">

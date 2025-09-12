@@ -1,20 +1,48 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import jwt from 'jsonwebtoken'
 
-export async function POST(request: NextRequest) {
+const SECRET = process.env.JWT_SECRET as string
+
+export async function POST(req: Request) {
   try {
-    const { username, password } = await request.json()
-    
-    const adminUsername = process.env.ADMIN_USERNAME
-    const adminPassword = process.env.ADMIN_PASSWORD
-    
-    if (username === adminUsername && password === adminPassword) {
-      return NextResponse.json({ success: true }, { status: 200 })
-    } else {
-      return NextResponse.json({ error: 'Usuario o contraseña incorrectos' }, { status: 401 })
+    const { username, password } = await req.json()
+
+    // Valida contra variables de entorno o base de datos
+    if (
+      username === process.env.ADMIN_USERNAME &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = jwt.sign({ username }, SECRET, { expiresIn: '1h' })
+
+      const res = NextResponse.json({ success: true })
+      res.cookies.set('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60, // 1 hora
+      })
+
+      return res
     }
-    
-  } catch (error) {
-    console.error('Error in authentication:', error)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
+
+    return NextResponse.json(
+      { error: 'Credenciales inválidas' },
+      { status: 401 }
+    )
+  } catch {
+    return NextResponse.json({ error: 'Error en autenticación' }, { status: 500 })
   }
+}
+
+export async function DELETE() {
+  const res = NextResponse.json({ success: true })
+  res.cookies.set('token', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+    expires: new Date(0), // elimina cookie
+  })
+  return res
 }

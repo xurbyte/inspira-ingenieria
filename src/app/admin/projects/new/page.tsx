@@ -39,7 +39,6 @@ function NewProjectContent() {
   const { showToast } = useToast()
   const [category, setCategory] = useState('')
   const [showCategorySelector, setShowCategorySelector] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<ProjectFormData>({
     title: '',
@@ -63,23 +62,17 @@ function NewProjectContent() {
   })
 
   useEffect(() => {
-    const auth = localStorage.getItem('adminAuth')
-    if (auth !== 'true') {
-      router.push('/admin')
-    } else {
-      setIsAuthenticated(true)
-      const categoryParam = searchParams.get('category')
-      if (categoryParam) {
-        setCategory(categoryParam)
-        setShowCategorySelector(false)
-      }
+    const categoryParam = searchParams.get('category')
+    if (categoryParam) {
+      setCategory(categoryParam)
+      setShowCategorySelector(false)
     }
-  }, [router, searchParams])
+  }, [searchParams])
 
   const handleCategorySelect = (selectedCategory: string) => {
     setCategory(selectedCategory)
     setShowCategorySelector(false)
-    setFormData(prev => ({ ...prev, type: '' })) 
+    setFormData(prev => ({ ...prev, type: '' }))
   }
 
   const getTypeOptions = () => {
@@ -141,9 +134,9 @@ function NewProjectContent() {
     const maxFileSize = 5 * 1024 * 1024 // 5MB per file
     const maxTotalSize = 10 * 1024 * 1024 // 10MB total
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-    
+
     let totalSize = 0
-    
+
     // Validate cover image
     if (formData.coverImage) {
       if (formData.coverImage.size > maxFileSize) {
@@ -154,7 +147,7 @@ function NewProjectContent() {
       }
       totalSize += formData.coverImage.size
     }
-    
+
     // Validate detail images
     for (let i = 0; i < formData.detailImages.length; i++) {
       const file = formData.detailImages[i]
@@ -166,7 +159,7 @@ function NewProjectContent() {
       }
       totalSize += file.size
     }
-    
+
     if (totalSize > maxTotalSize) {
       throw new Error(`El tamaño total de archivos (${(totalSize / 1024 / 1024).toFixed(1)}MB) excede el límite de 10MB.`)
     }
@@ -179,9 +172,9 @@ function NewProjectContent() {
     try {
       // Validate files before sending
       validateFiles()
-      
+
       const submitData = new FormData()
-      
+
       Object.entries(formData).forEach(([key, value]) => {
         if (key === 'coverImage' && value instanceof File) {
           submitData.append('coverImage', value)
@@ -197,7 +190,7 @@ function NewProjectContent() {
           submitData.append(key, value)
         }
       })
-      
+
       submitData.append('category', category)
 
       const response = await fetch('/api/projects', {
@@ -211,21 +204,17 @@ function NewProjectContent() {
       }
 
       showToast('success', 'Proyecto creado exitosamente', `El proyecto "${formData.title}" ha sido creado correctamente.`)
-      
+
       setTimeout(() => {
         router.push('/admin/dashboard')
       }, 1500)
-      
+
     } catch (error) {
       console.error('Error creating project:', error)
       showToast('error', 'Error al crear proyecto', error instanceof Error ? error.message : 'Error al crear el proyecto. Por favor, intenta nuevamente.')
     } finally {
       setIsLoading(false)
     }
-  }
-
-  if (!isAuthenticated) {
-    return <div className="min-h-screen flex items-center justify-center">Verificando autenticación...</div>
   }
 
   if (showCategorySelector) {
@@ -399,9 +388,9 @@ function NewProjectContent() {
 
                 <div className="space-y-2">
                   <Label htmlFor="type">Tipo *</Label>
-                  <select 
+                  <select
                     id="type"
-                    value={formData.type} 
+                    value={formData.type}
                     onChange={(e) => handleInputChange('type', e.target.value)}
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     required

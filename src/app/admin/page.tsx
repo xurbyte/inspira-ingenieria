@@ -23,14 +23,11 @@ export default function AdminLogin() {
     try {
       const response = await fetch('/api/auth', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       })
 
       if (response.ok) {
-        localStorage.setItem('adminAuth', 'true')
         router.push('/admin/dashboard')
       } else {
         const errorData = await response.json()
@@ -39,7 +36,6 @@ export default function AdminLogin() {
     } catch {
       setError('Error de conexión. Por favor, intenta nuevamente.')
     }
-    
     setIsLoading(false)
   }
 
@@ -93,11 +89,7 @@ export default function AdminLogin() {
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
           </form>
