@@ -8,7 +8,12 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value
   const { pathname } = req.nextUrl
 
-  // Proteger todo /admin
+  // Si es la página de login (/admin) -> no proteger
+  if (pathname === '/admin') {
+    return NextResponse.next()
+  }
+
+  // Proteger las demás páginas de /admin
   if (pathname.startsWith('/admin')) {
     if (!token) {
       return NextResponse.redirect(new URL('/admin', req.url))
@@ -21,7 +26,7 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // Proteger solo /api/projects excepto /api/projects/all
+  // Proteger API salvo /all
   if (pathname.startsWith('/api/projects') && !pathname.endsWith('/all')) {
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

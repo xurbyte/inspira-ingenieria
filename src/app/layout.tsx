@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ToastProvider } from "@/components/ui/toast";
@@ -18,37 +18,18 @@ const geistMono = Geist_Mono({
 
 const tasaOrbiter = localFont({
   src: [
-    {
-      path: '../../public/fonts/static/TASAOrbiter-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-Medium.ttf',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-SemiBold.ttf',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-ExtraBold.ttf',
-      weight: '800',
-      style: 'normal',
-    },
+    { path: "../../public/fonts/static/TASAOrbiter-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/static/TASAOrbiter-Medium.ttf", weight: "500", style: "normal" },
+    { path: "../../public/fonts/static/TASAOrbiter-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "../../public/fonts/static/TASAOrbiter-Bold.ttf", weight: "700", style: "normal" },
+    { path: "../../public/fonts/static/TASAOrbiter-ExtraBold.ttf", weight: "800", style: "normal" },
   ],
-  variable: '--font-tasa-orbiter',
-  display: 'swap',
+  variable: "--font-tasa-orbiter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
+  // metadataBase: new URL("https://www.inspiracivil.com"),
   title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
   description:
     "Inspira: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
@@ -61,16 +42,15 @@ export const metadata: Metadata = {
     "Inspira Ingeniería",
   ],
   robots: "index, follow",
-  viewport: "width=device-width, initial-scale=1",
   openGraph: {
     title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
     description:
       "Inspira: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
-    url: "https://www.inspiracivil.com", // Cambia a tu dominio real
+    url: "https://www.inspiracivil.com",
     siteName: "Inspira Ingeniería",
     images: [
       {
-        url: "/images/inspira-og-image.jpg", // Asegúrate de tener una imagen optimizada (1200x630px)
+        url: "/images/inspira-og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Inspira Ingeniería Civil en Puerto Madryn",
@@ -88,11 +68,16 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="es">
       <body
@@ -100,9 +85,7 @@ export default function RootLayout({
       >
         <ToastProvider>
           <ProjectsProvider>
-            <ConditionalViewTransition>
-              {children}
-            </ConditionalViewTransition>
+            <ConditionalViewTransition>{children}</ConditionalViewTransition>
           </ProjectsProvider>
         </ToastProvider>
       </body>
