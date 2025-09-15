@@ -43,7 +43,7 @@ export function ServicesSection() {
         "Sistemas constructivos tradicionales (hormigón y mampostería)",
         "Estructuras en wood frame y steel frame",
         "Estructuras metálicas para naves industriales",
-        "Optimización de materiales según normativas CIRSOC",
+        "Acompañamiento técnico desde el anteproyecto",
       ],
       cta: "Consultanos tu proyecto de cálculo estructural",
     },
@@ -74,16 +74,16 @@ export function ServicesSection() {
     },
     {
       icon: Users,
-      title: "Asesorías Técnicas para Profesionales",
+      title: "Dirección de Obra",
       description:
-        "Asesoramos a arquitectos, constructoras y desarrolladores en decisiones estructurales desde el anteproyecto.",
+        "Brindamos dirección de obra para garantizar que la construcción se ejecute según proyecto.",
       details: [
-        "Evitamos sobredimensionamientos",
-        "Reducimos retrabajos",
-        "Soporte técnico en cada etapa",
-        "Optimización de costos y tiempos",
+        "Supervisión de trabajos estructurales en obra",
+        "Verificación de calidad en materiales y técnicas constructivas",
+        "Control de tiempos y costos",
+        "Ajustes técnicos durante la ejecución",
       ],
-      cta: "Consultar asesoría técnica",
+      cta: "Consultar dirección de obra",
     },
   ]
 

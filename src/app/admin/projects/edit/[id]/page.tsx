@@ -472,7 +472,7 @@ export default function EditProject() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="area">Área *</Label>
+                  <Label htmlFor="area">Superficie *</Label>
                   <Input
                     id="area"
                     value={formData.area}
