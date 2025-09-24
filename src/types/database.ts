@@ -35,6 +35,7 @@ export interface DatabaseProject {
 
 export interface CreateProjectData {
   title: string
+  slug?: string // Agregado como opcional
   architect: string
   location: string
   year: string
@@ -45,8 +46,8 @@ export interface CreateProjectData {
   category: Category
   type: string
   area?: string
-  coverImage: ProjectImage
-  images: ProjectImage[]
+  coverImage?: ProjectImage
+  images?: ProjectImage[]
   specs: ProjectSpecs
 }
 

@@ -15,18 +15,9 @@ export class ProjectRepository implements IProjectRepository {
     return project ? this.mapPrismaToDatabase(project) : null
   }
 
-  async findBySlug(category: Category, slug: string): Promise<DatabaseProject | null> {
-
-    const title = this.slugToTitle(slug)
-    
-    const project = await prisma.project.findFirst({
-      where: {
-        category,
-        title: {
-          contains: title,
-          mode: 'insensitive'
-        }
-      }
+  async findBySlug(slug: string): Promise<DatabaseProject | null> {
+    const project = await prisma.project.findUnique({
+      where: { slug }
     })
     
     return project ? this.mapPrismaToDatabase(project) : null
@@ -48,15 +39,18 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async create(data: CreateProjectData): Promise<DatabaseProject> {
-    const project = await prisma.project.create({
-      data: {
-        ...data,
-        coverImage: data.coverImage as unknown as Prisma.InputJsonValue,
-        images: data.images as unknown as Prisma.InputJsonValue[],
-        specs: data.specs as unknown as Prisma.InputJsonValue
-      }
-    })
+    // Provide temporary coverImage if not provided
+    const createData = {
+      ...data,
+      slug: data.slug!,
+      coverImage: data.coverImage || { src: '', alt: 'Temporary' },
+      images: data.images || []
+    } as any
     
+    const project = await prisma.project.create({
+      data: createData
+    })
+
     return this.mapPrismaToDatabase(project)
   }
 
@@ -65,6 +59,9 @@ export class ProjectRepository implements IProjectRepository {
     
     const updatePayload: Record<string, unknown> = { ...updateData }
     
+    if (updateData.slug) {
+      updatePayload.slug = updateData.slug // Persistir slug si se proporciona
+    }
     if (updateData.coverImage) {
       updatePayload.coverImage = updateData.coverImage as unknown as Prisma.InputJsonValue
     }
@@ -93,7 +90,7 @@ export class ProjectRepository implements IProjectRepository {
     return {
       id: project.id,
       title: project.title,
-      slug: this.titleToSlug(project.title),
+      slug: project.slug,
       architect: project.architect,
       location: project.location,
       year: project.year,
@@ -121,21 +118,5 @@ export class ProjectRepository implements IProjectRepository {
       structure: (specs.structure as string) || '',
       normative: (specs.normative as string) || ''
     }
-  }
-
-  private titleToSlug(title: string): string {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
-  }
-
-  private slugToTitle(slug: string): string {
-    return slug
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
   }
 }

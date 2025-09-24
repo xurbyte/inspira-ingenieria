@@ -13,6 +13,7 @@ datasource db {
 model Project {
   id          String   @id @default(cuid())
   title       String
+  slug        String   @unique
   architect   String
   location    String
   year        String

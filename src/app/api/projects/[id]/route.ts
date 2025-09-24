@@ -2,45 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getProjectService } from '@/lib/dependency-injection'
 import { UpdateProjectData, DatabaseProject, ProjectImage } from '@/types/database'
 import { cloudinaryService } from '@/lib/cloudinary-service'
-
-async function uploadImageToCloudinary(
-  file: File,
-  category: string,
-  projectSlug: string,
-  imageType: 'cover' | 'additional',
-  imageIndex?: number
-): Promise<string> {
-  const maxFileSize = 5 * 1024 * 1024 // 5MB
-  if (file.size > maxFileSize) {
-    throw new Error(`File ${file.name} is too large. Maximum size is 5MB per file.`)
-  }
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-  if (!allowedTypes.includes(file.type)) {
-    throw new Error(`File ${file.name} has invalid type. Only JPEG, PNG, and WebP are allowed.`)
-  }
-
-  try {
-    let folder: string
-    let publicId: string
-
-    if (imageType === 'cover') {
-      folder = cloudinaryService.getProjectFolder(category, projectSlug)
-      publicId = 'cover'
-    } else {
-      folder = `${cloudinaryService.getProjectFolder(category, projectSlug)}/images`
-      publicId = `image-${imageIndex! + 1}`
-    }
-
-    const uploadResult = await cloudinaryService.uploadImage(file, {
-      folder: folder,
-      publicId: publicId
-    })
-
-    return uploadResult.secure_url
-  } catch (error) {
-    throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`)
-  }
-}
+import { Category } from '@/types/enums'
 
 async function deleteCloudinaryImages(project: DatabaseProject, category: string) {
   return cloudinaryService.deleteProjectImages(project, category)
@@ -51,23 +13,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id: projectId } = await params
     const formData = await request.formData()
     
-    const title = formData.get('title') as string
-    const architect = formData.get('architect') as string
-    const location = formData.get('location') as string
-    const year = formData.get('year') as string
-    const type = formData.get('type') as string
-    const area = formData.get('area') as string
-    const description = formData.get('description') as string
-    const challenge = formData.get('challenge') as string
-    const solution = formData.get('solution') as string
-    const result = formData.get('result') as string
-    const category = formData.get('category') as string
+    const title = formData.get('title') as string || undefined
+    const architect = formData.get('architect') as string || undefined
+    const location = formData.get('location') as string || undefined
+    const year = formData.get('year') as string || undefined
+    const type = formData.get('type') as string || undefined
+    const area = formData.get('area') as string || undefined
+    const description = formData.get('description') as string || undefined
+    const challenge = formData.get('challenge') as string || undefined
+    const solution = formData.get('solution') as string || undefined
+    const result = formData.get('result') as string || undefined
+    const category = formData.get('category') as string || undefined
     
     // Extract specs from form data
-    const specsSystem = formData.get('specs.system') as string
-    const specsFoundations = formData.get('specs.foundations') as string
-    const specsStructure = formData.get('specs.structure') as string
-    const specsNormative = formData.get('specs.normative') as string
+    const specsSystem = formData.get('specs.system') as string || undefined
+    const specsFoundations = formData.get('specs.foundations') as string || undefined
+    const specsStructure = formData.get('specs.structure') as string || undefined
+    const specsNormative = formData.get('specs.normative') as string || undefined
     
     const projectService = getProjectService()
     const currentProject = await projectService.getProjectById(projectId)
@@ -75,27 +37,84 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (!currentProject) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
-    
-    const projectSlug = getProjectService().generateSlug(currentProject.title)
-    
-    let coverImagePath = currentProject.coverImage.src
-    const coverImageFile = formData.get('coverImage') as File
-    if (coverImageFile && coverImageFile.size > 0) {
-      coverImagePath = await uploadImageToCloudinary(coverImageFile, category, projectSlug, 'cover')
+
+    const currentCategoryString = getCategoryStringFromEnum(currentProject.category)
+
+    let needUrlReplace = false
+
+    if (category && category !== currentCategoryString) {
+      const oldBase = cloudinaryService.getProjectFolder(currentCategoryString, currentProject.id)
+      const newBase = cloudinaryService.getProjectFolder(category, currentProject.id)
+
+      const resources = await cloudinaryService.getResourcesByPrefix(oldBase)
+
+      for (const asset of resources) {
+        const oldId = asset.public_id
+        const newId = oldId.replace(oldBase, newBase)
+        const success = await cloudinaryService.renameResource(oldId, newId)
+        if (!success) {
+          console.warn(`Failed to rename ${oldId} to ${newId}`)
+        }
+      }
+
+      needUrlReplace = true
     }
-    
-    const detailImages: string[] = [...currentProject.images.map((img: ProjectImage) => img.src)]
+
+    const finalCategory = category || currentCategoryString
+    const finalBase = cloudinaryService.getProjectFolder(finalCategory, currentProject.id)
+
+    // Handle cover image
+    let coverImageSrc = currentProject.coverImage.src
+    const coverImageFile = formData.get('coverImage') as File | null
+    if (coverImageFile) {
+      const uploadResult = await cloudinaryService.updateCoverImage(
+        currentProject.coverImage.src,
+        coverImageFile,
+        finalCategory,
+        currentProject.id
+      )
+      coverImageSrc = uploadResult.secure_url
+    } else if (needUrlReplace) {
+      coverImageSrc = coverImageSrc.replace(`/${currentCategoryString}/`, `/${finalCategory}/`)
+    }
+
+    // Handle additional images
+    let imagesPaths = currentProject.images.map(img => img.src)
+    if (needUrlReplace) {
+      imagesPaths = imagesPaths.map(src => src.replace(`/${currentCategoryString}/`, `/${finalCategory}/`))
+    }
+
     let imageIndex = 0
-    
+    const newDetailImages: string[] = []
     while (true) {
-      const detailImageFile = formData.get(`detailImage_${imageIndex}`) as File
-      if (!detailImageFile || detailImageFile.size === 0) break
-      
-      const detailImagePath = await uploadImageToCloudinary(detailImageFile, category, projectSlug, 'additional', detailImages.length)
-      detailImages.push(detailImagePath)
+      const imageFile = formData.get(`detailImage_${imageIndex}`) as File | null
+      if (!imageFile || imageFile.size === 0) break
+
+      const uploadResult = await cloudinaryService.uploadImage(imageFile, {
+        folder: `${finalBase}/images`,
+        publicId: `image-${imagesPaths.length + imageIndex + 1}`
+      })
+      newDetailImages.push(uploadResult.secure_url)
+
       imageIndex++
     }
-    
+
+    imagesPaths = [...imagesPaths, ...newDetailImages]
+
+    // Map category if changed
+    let categoryEnum: Category | undefined
+    if (category) {
+      const categoryMap: { [key: string]: Category } = {
+        'viviendas': Category.VIVIENDAS,
+        'naves-industriales': Category.NAVES_INDUSTRIALES,
+        'funcional': Category.FUNCIONAL
+      }
+      categoryEnum = categoryMap[category]
+      if (!categoryEnum) {
+        return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
+      }
+    }
+
     const updateData: UpdateProjectData = {
       id: projectId,
       title,
@@ -104,31 +123,28 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       year,
       type,
       area,
-      coverImage: {
-        src: coverImagePath,
-        alt: `${title} - Vista exterior`
-      },
-      images: detailImages.map((src: string, index: number): ProjectImage => ({
-        src,
-        alt: `${title} - Detalle ${index + 1}`
-      })),
       description,
-      challenge: challenge || '',
-      solution: solution || '',
-      result: result || '',
+      challenge,
+      solution,
+      result,
+      category: categoryEnum,
+      coverImage: {
+        src: coverImageSrc,
+        alt: `${title || currentProject.title} - Vista exterior`
+      },
+      images: imagesPaths.map((src, index) => ({
+        src,
+        alt: `${title || currentProject.title} - Detalle ${index + 1}`
+      })),
       specs: {
-        system: specsSystem || currentProject.specs?.system || '',
-        foundations: specsFoundations || currentProject.specs?.foundations || '',
-        structure: specsStructure || currentProject.specs?.structure || '',
-        normative: specsNormative || currentProject.specs?.normative || ''
+        system: specsSystem ?? currentProject.specs.system,
+        foundations: specsFoundations ?? currentProject.specs.foundations,
+        structure: specsStructure ?? currentProject.specs.structure,
+        normative: specsNormative ?? currentProject.specs.normative
       }
     }
-    
+
     const updatedProject = await projectService.updateProject(updateData)
-    
-    if (!updatedProject) {
-      return NextResponse.json({ error: 'Failed to update project data' }, { status: 500 })
-    }
     
     return NextResponse.json({ 
       message: 'Project updated successfully', 
@@ -148,33 +164,27 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id: projectId } = await params
     const { searchParams } = new URL(request.url)
-    const category = searchParams.get('category')
+    const categoryParam = searchParams.get('category')
     
-    if (!category) {
-      return NextResponse.json({ error: 'Category parameter is required' }, { status: 400 })
+    const projectService = getProjectService()
+    const project = await projectService.getProjectById(projectId)
+    
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
     
-    let project: DatabaseProject | null = null
+    const category = categoryParam || getCategoryStringFromEnum(project.category)
     
-    try {
-      const projectService = getProjectService()
-      project = await projectService.getProjectById(projectId)
-    } catch {
-    }
+    const hasCloudinaryImages = project.coverImage.src.includes('cloudinary.com') || 
+                                project.images.some(img => img.src.includes('cloudinary.com'))
     
-    if (project) {
-      const hasCloudinaryImages = project.coverImage.src.includes('cloudinary.com') || 
-                                  project.images.some(img => img.src.includes('cloudinary.com'))
-      
-      if (hasCloudinaryImages) {
-        const cloudinarySuccess = await deleteCloudinaryImages(project, category)
-        if (!cloudinarySuccess) {
-          console.warn('Failed to delete images from Cloudinary, but continuing with project deletion')
-        }
+    if (hasCloudinaryImages) {
+      const cloudinarySuccess = await deleteCloudinaryImages(project, category)
+      if (!cloudinarySuccess) {
+        console.warn('Failed to delete images from Cloudinary, but continuing with project deletion')
       }
     }
     
-    const projectService = getProjectService()
     await projectService.deleteProject(projectId)
     
     return NextResponse.json({ 
@@ -188,4 +198,13 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       details: errorMessage 
     }, { status: 500 })
   }
+}
+
+function getCategoryStringFromEnum(category: Category): string {
+  const map: { [key in Category]: string } = {
+    [Category.VIVIENDAS]: 'viviendas',
+    [Category.NAVES_INDUSTRIALES]: 'naves-industriales',
+    [Category.FUNCIONAL]: 'funcional'
+  }
+  return map[category]
 }

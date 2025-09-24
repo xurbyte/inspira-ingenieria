@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getProjectService } from '@/lib/dependency-injection'
-import { CreateProjectData } from '@/types/database'
+import { CreateProjectData, UpdateProjectData } from '@/types/database'
 import { Category } from '@/types/enums'
 import { cloudinaryService } from '@/lib/cloudinary-service'
 
@@ -32,45 +32,6 @@ export async function POST(request: NextRequest) {
     const specsStructure = formData.get('specs.structure') as string
     const specsNormative = formData.get('specs.normative') as string
 
-    const projectSlug = projectService.generateSlug(title)
-
-    // Upload cover image to Cloudinary using the service
-    const coverImageFile = formData.get('coverImage') as File
-    if (!coverImageFile) {
-      return NextResponse.json({ error: 'Cover image is required' }, { status: 400 })
-    }
-
-    const coverImageResult = await cloudinaryService.uploadImage(coverImageFile, {
-      folder: cloudinaryService.getProjectFolder(category, projectSlug),
-      publicId: 'cover'
-    })
-
-    // Handle additional images upload using the service
-    const additionalImages = []
-    let imageIndex = 0
-
-    // Look for detailImage_0, detailImage_1, etc.
-    while (true) {
-      const imageFile = formData.get(`detailImage_${imageIndex}`) as File
-      if (!imageFile || imageFile.size === 0) break
-
-      const images = await cloudinaryService.uploadProjectImages(
-        [imageFile],
-        category,
-        projectSlug,
-        additionalImages.length
-      )
-
-      if (images.length > 0) {
-        additionalImages.push({
-          src: images[0].src,
-          alt: `${title} - Imagen ${imageIndex + 1}`
-        })
-      }
-
-      imageIndex++
-    }
-
     // Map category string to enum
     const categoryMap: { [key: string]: Category } = {
       'viviendas': Category.VIVIENDAS,
@@ -78,9 +39,12 @@ export async function POST(request: NextRequest) {
       'funcional': Category.FUNCIONAL
     }
     const categoryEnum = categoryMap[category]
+    if (!categoryEnum) {
+      return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
+    }
 
-    // Create project data
-    const projectData: CreateProjectData = {
+    // Create initial project data without images
+    const initialProjectData: CreateProjectData = {
       title,
       architect,
       location,
@@ -92,28 +56,68 @@ export async function POST(request: NextRequest) {
       category: categoryEnum,
       type,
       area: area || undefined,
-      coverImage: {
-        src: coverImageResult.secure_url,
-        alt: title
-      },
-      images: additionalImages,
       specs: {
         system: specsSystem,
         foundations: specsFoundations,
         structure: specsStructure,
         normative: specsNormative
       }
+      // coverImage and images will be added in update
     }
 
-    // Create project using service
-    const newProject = await projectService.createProject(projectData)
+    // Create project
+    const newProject = await projectService.createProject(initialProjectData)
 
-    return NextResponse.json(newProject, { status: 201 })
+    // Now upload images using project.id
+    let coverImage: { src: string; alt: string } | undefined
+    const coverImageFile = formData.get('coverImage') as File | null
+    if (coverImageFile) {
+      const coverResult = await cloudinaryService.uploadImage(coverImageFile, {
+        folder: `${cloudinaryService.getProjectFolder(category, newProject.id)}/cover`,
+        publicId: 'cover'
+      })
+      coverImage = {
+        src: coverResult.secure_url,
+        alt: title
+      }
+    } else {
+      return NextResponse.json({ error: 'Cover image is required' }, { status: 400 })
+    }
+
+    // Handle additional images
+    const additionalImages: { src: string; alt: string }[] = []
+    let imageIndex = 0
+    while (true) {
+      const imageFile = formData.get(`detailImage_${imageIndex}`) as File | null
+      if (!imageFile || imageFile.size === 0) break
+
+      const imageResult = await cloudinaryService.uploadImage(imageFile, {
+        folder: `${cloudinaryService.getProjectFolder(category, newProject.id)}/images`,
+        publicId: `image_${imageIndex + 1}`
+      })
+      additionalImages.push({
+        src: imageResult.secure_url,
+        alt: `${title} - Imagen ${imageIndex + 1}`
+      })
+
+      imageIndex++
+    }
+
+    // Update project with images
+    const updateData: UpdateProjectData = {
+      id: newProject.id,
+      coverImage,
+      images: additionalImages
+    }
+
+    const finalProject = await projectService.updateProject(updateData)
+
+    return NextResponse.json(finalProject, { status: 201 })
   } catch (error) {
+    console.error('Error in POST /api/projects:', error)
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
     return NextResponse.json({
-      error: 'Error al crear el proyecto',
-      details: errorMessage
+      error: errorMessage
     }, { status: 500 })
   }
 }
@@ -123,7 +127,6 @@ export async function GET(request: NextRequest) {
     const projectService = getProjectService()
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
-    
     
     let projects
     

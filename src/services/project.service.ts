@@ -14,17 +14,12 @@ export class ProjectService implements IProjectService {
     return await this.projectRepository.findById(id)
   }
 
-  async getProjectBySlug(category: string, slug: string): Promise<DatabaseProject | null> {
-    const categoryEnum = this.mapStringToCategory(category)
-    if (!categoryEnum) {
-      throw new Error(`Invalid category: ${category}`)
-    }
-    
+  async getProjectBySlug(slug: string): Promise<DatabaseProject | null> {
     if (!slug || typeof slug !== 'string') {
       throw new Error('Invalid slug')
     }
     
-    return await this.projectRepository.findBySlug(categoryEnum, slug)
+    return await this.projectRepository.findBySlug(slug)
   }
 
   async getProjectsByCategory(category: string): Promise<DatabaseProject[]> {
@@ -41,6 +36,8 @@ export class ProjectService implements IProjectService {
   }
 
   async createProject(data: CreateProjectData): Promise<DatabaseProject> {
+    data.slug = await this.generateSlug(data.title); // Updated to match interface, but made async for uniqueness
+
     const validation = this.validateProjectData(data)
     if (!validation.isValid) {
       throw new Error(`Validation failed: ${validation.errors.join(', ')}`)
@@ -52,6 +49,10 @@ export class ProjectService implements IProjectService {
   async updateProject(data: UpdateProjectData): Promise<DatabaseProject> {
     if (!data.id) {
       throw new Error('Project ID is required for update')
+    }
+    
+    if (data.title) {
+      data.slug = await this.generateSlug(data.title, data.id); // Updated for uniqueness
     }
     
     const validation = this.validateProjectData(data)
@@ -75,18 +76,33 @@ export class ProjectService implements IProjectService {
     await this.projectRepository.delete(id)
   }
 
-  generateSlug(title: string): string {
-    return title
+  async generateSlug(title: string, excludeId?: string): Promise<string> { // Made async for DB check
+    let baseSlug = title
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
-      .trim()
+      .trim();
+
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (true) {
+      const existingProject = await this.projectRepository.findBySlug(slug);
+      if (!existingProject || (excludeId && existingProject.id === excludeId)) {
+        break;
+      }
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    return slug;
   }
 
   validateProjectData(data: Partial<CreateProjectData>): { isValid: boolean; errors: string[] } {
     const errors: string[] = []
     
+    // Required fields validation
     if (data.title !== undefined && (!data.title || data.title.trim().length === 0)) {
       errors.push('Title is required')
     }
@@ -127,16 +143,25 @@ export class ProjectService implements IProjectService {
       errors.push('Type is required')
     }
     
-    if (data.coverImage !== undefined && (!data.coverImage || !data.coverImage.src || !data.coverImage.alt)) {
-      errors.push('Cover image with src and alt is required')
+    // Only validate coverImage if it's explicitly provided (not undefined)
+    if (data.coverImage !== undefined) {
+      if (!data.coverImage || !data.coverImage.src || !data.coverImage.alt) {
+        // Allow temporary placeholder
+        if (data.coverImage?.alt !== 'Temporary') {
+          errors.push('Cover image with src and alt is required if provided')
+        }
+      }
     }
     
-    if (data.images !== undefined && !Array.isArray(data.images)) {
-      errors.push('Images must be an array')
+    // Only validate images if it's explicitly provided (not undefined)
+    if (data.images !== undefined) {
+      if (!Array.isArray(data.images)) {
+        errors.push('Images must be an array if provided')
+      }
     }
     
     if (data.specs !== undefined && (!data.specs || typeof data.specs !== 'object')) {
-      errors.push('Specs object is required')
+      errors.push('Specs object is required if provided')
     }
     
     return {

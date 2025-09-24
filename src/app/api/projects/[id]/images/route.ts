@@ -26,7 +26,6 @@ async function updateProjectImages(projectId: string, imageToDelete: string): Pr
   }
 }
 
-
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: projectId } = await params
@@ -37,12 +36,13 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: 'imagePath parameter is required' }, { status: 400 })
     }
 
-    // Use the new Cloudinary service to delete the image
+    // Delete from Cloudinary
     const cloudinarySuccess = await cloudinaryService.deleteImage(imagePath)
     if (!cloudinarySuccess) {
       console.warn('Failed to delete image from Cloudinary, but continuing with database update')
     }
 
+    // Update project in database
     const updatedProject = await updateProjectImages(projectId, imagePath)
     if (!updatedProject) {
       return NextResponse.json({ error: 'Failed to update project data' }, { status: 500 })

@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary'
 import { DatabaseProject } from '@/types/database'
+import { Category } from '@/types/enums'
 
 // Configure Cloudinary once
 cloudinary.config({
@@ -87,79 +88,53 @@ export class CloudinaryService {
     const buffer = Buffer.from(await file.arrayBuffer())
     const transformations = options.transformations || this.DEFAULT_TRANSFORMATIONS
 
-    try {
-      const uploadResult = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: 'image',
-            folder: options.folder,
-            public_id: options.publicId,
-            transformation: transformations
-          },
-          (error, result) => {
-            if (error) reject(error)
-            else resolve(result as CloudinaryUploadResult)
-          }
-        )
-        uploadStream.end(buffer)
-      })
-
-      return uploadResult
-    } catch (error) {
-      throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
+    return new Promise<CloudinaryUploadResult>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          folder: options.folder,
+          public_id: options.publicId,
+          transformation: transformations
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve({
+            secure_url: result!.secure_url,
+            public_id: result!.public_id
+          })
+        }
+      )
+      uploadStream.end(buffer)
+    })
   }
 
   /**
-   * Uploads multiple images to Cloudinary
+   * Uploads multiple files
    */
   public async uploadImages(
     files: File[],
     options: UploadOptions
   ): Promise<CloudinaryUploadResult[]> {
-    const uploadPromises = files.map((file, index) =>
-      this.uploadImage(file, {
-        ...options,
-        publicId: options.publicId ? `${options.publicId}-${index + 1}` : undefined
+    const uploads = files.map((file, index) => {
+      const fileOptions = { ...options }
+      if (options.publicId) {
+        fileOptions.publicId = `${options.publicId}-${index + 1}`
+      }
+      return this.uploadImage(file, fileOptions)
+    })
+    return Promise.all(uploads)
+  }
+
+  /**
+   * Deletes a single image by URL
+   */
+  public async deleteImage(url: string): Promise<boolean> {
+    try {
+      const publicId = this.extractPublicIdFromUrl(url)
+      await cloudinary.uploader.destroy(publicId, {
+        resource_type: 'image',
+        invalidate: true
       })
-    )
-
-    return Promise.all(uploadPromises)
-  }
-
-  /**
-   * Extracts public ID from Cloudinary URL
-   */
-  private extractPublicId(imageUrl: string): string {
-    try {
-      const urlParts = imageUrl.split('/')
-      const filename = urlParts[urlParts.length - 1]
-      const publicIdWithExtension = filename.split('.')[0]
-
-      const folderStartIndex = urlParts.findIndex(part => part === 'inspira-ingenieria')
-      if (folderStartIndex === -1) {
-        throw new Error('Invalid Cloudinary URL format')
-      }
-
-      const folderParts = urlParts.slice(folderStartIndex, -1)
-      return `${folderParts.join('/')}/${publicIdWithExtension}`
-    } catch {
-      throw new Error(`Failed to extract public ID from URL: ${imageUrl}`)
-    }
-  }
-
-  /**
-   * Deletes a specific image from Cloudinary
-   */
-  public async deleteImage(imageUrl: string): Promise<boolean> {
-    try {
-      if (!imageUrl.includes('cloudinary.com')) {
-        console.warn('Image URL is not a Cloudinary URL, skipping deletion')
-        return true
-      }
-
-      const publicId = this.extractPublicId(imageUrl)
-      await cloudinary.uploader.destroy(publicId)
       return true
     } catch (error) {
       console.error('Error deleting image from Cloudinary:', error)
@@ -168,43 +143,33 @@ export class CloudinaryService {
   }
 
   /**
-   * Deletes all images for a project from Cloudinary
+   * Deletes all project images and folders
    */
-  public async deleteProjectImages(
-    project: DatabaseProject,
-    category: string
-  ): Promise<boolean> {
+  public async deleteProjectImages(project: DatabaseProject, category: string): Promise<boolean> {
+    const folderPath = this.getProjectFolder(category, project.id)
+
     try {
-      const categoryFolder = this.CATEGORY_FOLDER_MAP[category] || category
-      const projectSlug = this.generateProjectSlug(project.title)
-      const folderPath = `inspira-ingenieria/${categoryFolder}/${projectSlug}`
+      // Delete resources by prefix
+      await cloudinary.api.delete_resources_by_prefix(folderPath, {
+        type: 'upload',
+        resource_type: 'image'
+      })
 
-      // Delete all resources in the folder
-      await cloudinary.api.delete_resources_by_prefix(folderPath)
-
-      // Try to delete subfolders
-      const subfolders = ['portada', 'adentro', 'images']
+      // Delete subfolders
+      const subfolders = ['cover', 'images']
       for (const subfolder of subfolders) {
         try {
           await cloudinary.api.delete_folder(`${folderPath}/${subfolder}`)
         } catch {
-          // Ignore errors for subfolders that don't exist
+          // Ignore if not exist
         }
       }
 
-      // Try to delete main folder
+      // Delete main folder
       try {
         await cloudinary.api.delete_folder(folderPath)
       } catch {
-        // If folder deletion fails, try to delete remaining resources
-        try {
-          await cloudinary.api.delete_resources_by_prefix(folderPath, {
-            type: 'upload',
-            resource_type: 'image'
-          })
-        } catch {
-          // Some resources might remain, but that's okay
-        }
+        // Ignore
       }
 
       return true
@@ -215,29 +180,62 @@ export class CloudinaryService {
   }
 
   /**
-   * Updates cover image - deletes old one and uploads new one
+   * Gets resources by prefix
+   */
+  public async getResourcesByPrefix(prefix: string): Promise<any[]> {
+    try {
+      const result = await cloudinary.api.resources({
+        type: 'upload',
+        resource_type: 'image',
+        prefix,
+        max_results: 500
+      })
+      return result.resources || []
+    } catch (error) {
+      console.error('Error getting resources:', error)
+      return []
+    }
+  }
+
+  /**
+   * Renames a resource
+   */
+  public async renameResource(oldPublicId: string, newPublicId: string): Promise<boolean> {
+    try {
+      await cloudinary.uploader.rename(oldPublicId, newPublicId, {
+        resource_type: 'image',
+        invalidate: true
+      })
+      return true
+    } catch (error) {
+      console.error('Error renaming resource:', error)
+      return false
+    }
+  }
+
+  /**
+   * Updates cover image - deletes old if exists and uploads new
    */
   public async updateCoverImage(
     oldImageUrl: string,
     newFile: File,
     category: string,
-    projectSlug: string
+    projectId: string
   ): Promise<CloudinaryUploadResult> {
-    // Delete old image first
+    // Delete old if Cloudinary URL
     if (oldImageUrl.includes('cloudinary.com')) {
       const deleteSuccess = await this.deleteImage(oldImageUrl)
       if (!deleteSuccess) {
-        console.warn('Failed to delete old cover image, but continuing with upload')
+        console.warn('Failed to delete old cover image')
       }
     }
 
-    // Upload new image
-    const uploadResult = await this.uploadImage(newFile, {
-      folder: `inspira-ingenieria/${category}/${projectSlug}`,
+    // Upload new
+    const folder = `${this.getProjectFolder(category, projectId)}/cover`
+    return await this.uploadImage(newFile, {
+      folder,
       publicId: 'cover'
     })
-
-    return uploadResult
   }
 
   /**
@@ -246,15 +244,19 @@ export class CloudinaryService {
   public async uploadProjectImages(
     files: File[],
     category: string,
-    projectSlug: string,
+    projectId: string,
     startIndex: number = 0
   ): Promise<CloudinaryImageData[]> {
     if (files.length === 0) return []
 
-    const uploadResults = await this.uploadImages(files, {
-      folder: `inspira-ingenieria/${category}/${projectSlug}/images`,
-      publicId: `image-${startIndex + 1}`
-    })
+    const folder = `${this.getProjectFolder(category, projectId)}/images`
+
+    const uploadResults = await Promise.all(
+      files.map((file, index) => this.uploadImage(file, {
+        folder,
+        publicId: `image-${startIndex + index + 1}`
+      }))
+    )
 
     return uploadResults.map((result, index) => ({
       src: result.secure_url,
@@ -263,23 +265,31 @@ export class CloudinaryService {
   }
 
   /**
-   * Generates project slug (utility method)
+   * Extracts public_id from Cloudinary URL
    */
-  private generateProjectSlug(title: string): string {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
+  private extractPublicIdFromUrl(url: string): string {
+    const parts = url.split('/upload/')
+    if (parts.length < 2) throw new Error('Invalid Cloudinary URL')
+    const versionPath = parts[1].replace(/v\d+\//, '')
+    return versionPath.replace(/\.\w+$/, '')
   }
 
   /**
    * Gets folder path for a project
    */
-  public getProjectFolder(category: string, projectSlug: string): string {
-    const categoryFolder = this.CATEGORY_FOLDER_MAP[category] || category
-    return `inspira-ingenieria/${categoryFolder}/${projectSlug}`
+  public getProjectFolder(category: string | Category, projectId: string): string {
+    const categoryString = typeof category === 'string' ? category.toLowerCase() : this.getCategoryStringFromEnum(category)
+    const categoryFolder = this.CATEGORY_FOLDER_MAP[categoryString] || categoryString
+    return `inspira-ingenieria/${categoryFolder}/${projectId}`
+  }
+
+  private getCategoryStringFromEnum(category: Category): string {
+    const categoryEnumToString: { [key in Category]: string } = {
+      [Category.VIVIENDAS]: 'viviendas',
+      [Category.NAVES_INDUSTRIALES]: 'naves-industriales',
+      [Category.FUNCIONAL]: 'funcional'
+    }
+    return categoryEnumToString[category]
   }
 
   /**
