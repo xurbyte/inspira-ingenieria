@@ -11,10 +11,10 @@ export async function getProjectsByCategory(category: string): Promise<DatabaseP
   }
 }
 
-export async function getProjectBySlug(category: string, slug: string): Promise<DatabaseProject | null> {
+export async function getProjectBySlug(slug: string): Promise<DatabaseProject | null> {
   try {
     const projectService = getProjectService()
-    return await projectService.getProjectBySlug(category, slug)
+    return await projectService.getProjectBySlug(slug)
   } catch (error) {
     console.error('Error fetching project by slug:', error)
     return null

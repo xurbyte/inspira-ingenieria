@@ -43,9 +43,10 @@ export class ProjectRepository implements IProjectRepository {
     const createData = {
       ...data,
       slug: data.slug!,
-      coverImage: data.coverImage || { src: '', alt: 'Temporary' },
-      images: data.images || []
-    } as any
+      coverImage: (data.coverImage || { src: '', alt: 'Temporary' }) as unknown as Prisma.InputJsonValue,
+      images: (data.images || []) as unknown as Prisma.InputJsonValue[],
+      specs: data.specs as unknown as Prisma.InputJsonValue
+    }
     
     const project = await prisma.project.create({
       data: createData

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getProjectService } from '@/lib/dependency-injection'
-import { UpdateProjectData, DatabaseProject, ProjectImage } from '@/types/database'
+import { UpdateProjectData, DatabaseProject } from '@/types/database'
 import { cloudinaryService } from '@/lib/cloudinary-service'
 import { Category } from '@/types/enums'
 

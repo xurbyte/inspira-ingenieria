@@ -1,4 +1,3 @@
-import { Category } from '@/types/enums'
 import { DatabaseProject, CreateProjectData, UpdateProjectData } from '@/types/database'
 
 export interface IProjectService {

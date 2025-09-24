@@ -20,6 +20,19 @@ export interface CloudinaryImageData {
   alt: string
 }
 
+export interface CloudinaryResource {
+  public_id: string
+  secure_url: string
+  url: string
+  width: number
+  height: number
+  format: string
+  resource_type: string
+  created_at: string
+  bytes: number
+  type: string
+}
+
 export interface CloudinaryTransformation {
   quality?: string
   fetch_format?: string
@@ -182,7 +195,7 @@ export class CloudinaryService {
   /**
    * Gets resources by prefix
    */
-  public async getResourcesByPrefix(prefix: string): Promise<any[]> {
+  public async getResourcesByPrefix(prefix: string): Promise<CloudinaryResource[]> {
     try {
       const result = await cloudinary.api.resources({
         type: 'upload',
