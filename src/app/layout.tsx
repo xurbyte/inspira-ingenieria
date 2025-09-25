@@ -49,44 +49,35 @@ const tasaOrbiter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
-  description:
-    "Inspira: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
-  keywords: [
-    "ingeniería civil Puerto Madryn",
-    "estudio ingeniería Chubut",
-    "diseño estructural Argentina",
-    "consultoría ingeniería Madryn",
-    "proyectos civiles sostenibles",
-    "Inspira Ingeniería",
-  ],
-  robots: "index, follow",
-  viewport: "width=device-width, initial-scale=1",
+  title: {
+    default: "Inspira Ingeniería",
+    template: "%s | Inspira Ingeniería",
+  },
+  description: "Inspira Ingeniería: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  keywords: ["Inspira Ingeniería, ingeniería civil Puerto Madryn, ingeniería civil Chubut, ingeniería civil Patagonia, ingeniería civil Argentina, diseño estructural, consultoría, proyectos sostenibles, dirección estructural, consultoría estructural, proyectos estructurales, diseño estructural, consultoría estructural, proyectos estructurales, diseño estructural, consultoría estructural, proyectos estructurales"],
+  authors: [{ name: "Inspira Ingeniería, Maximo Ozonas" }],
+  creator: "Maximo Ozonas",
+  publisher: "Inspira Ingeniería",
   openGraph: {
-    title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
-    description:
-      "Inspira: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
-    url: "https://www.inspiracivil.com", // Cambia a tu dominio real
+    title: "Inspira Ingeniería",
+    description: "Inspira Ingeniería: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
+    url: "https://www.inspiracivil.com",
     siteName: "Inspira Ingeniería",
     images: [
       {
-        url: "/images/inspira-og-image.jpg", // Asegúrate de tener una imagen optimizada (1200x630px)
-        width: 1200,
-        height: 630,
-        alt: "Inspira Ingeniería Civil en Puerto Madryn",
+        url: "https://www.inspiracivil.com/lib/logo.jpeg",
+        width: 800,
+        height: 600,
+        alt: "Inspira Ingeniería",
       },
     ],
-    locale: "es_AR",
+    locale: "es-AR",
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Inspira - Ingeniería Civil en Puerto Madryn, Chubut",
-    description:
-      "Expertos en ingeniería civil en Puerto Madryn, Chubut. Diseño estructural y consultoría sostenible.",
-    images: ["/images/inspira-og-image.jpg"],
-  },
-};
+  }
+}
 
 export default function RootLayout({
   children,

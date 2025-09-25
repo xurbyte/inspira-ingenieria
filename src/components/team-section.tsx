@@ -30,14 +30,14 @@ export function TeamSection() {
     {
       name: "Tomás Portalez",
       title: "Ingeniero Civil - Co-fundador",
-      image: "/tomas.jpg",
+      image: "/tomas.jpeg",
       description:
         "Especialista en cálculo estructural y elaboración de memorias técnicas, con experiencia en viviendas, edificios y obras industriales",
     },
     {
       name: "Mateo Portalez",
       title: "Ingeniero Civil - Co-fundador",
-      image: "/mateo.jpg",
+      image: "/mateo.jpeg",
       description:
         "Referente en modelado estructural y documentación técnica, integrando arquitectura y cálculo en entornos BIM.",
     },
