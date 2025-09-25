@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     default: "Inspira Ingeniería",
     template: "%s | Inspira Ingeniería",
   },
-  description: "Inspira Ingeniería: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
+  description: "Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. ¡Contáctanos hoy!",
   keywords: [
     "Inspira Ingeniería",
     "ingeniería civil Puerto Madryn",
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Inspira Ingeniería",
-    description: "Inspira Ingeniería: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles.",
+    description: "Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles.",
     url: "https://www.ingenieriainspira.com",
     siteName: "Inspira Ingeniería",
     images: [
@@ -98,7 +98,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Inspira Ingeniería",
-    description: "Inspira Ingeniería: Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles.",
+    description: "Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles.",
     images: ["/logo-opengraph.png"],
   },
 };
