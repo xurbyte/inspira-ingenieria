@@ -47,7 +47,7 @@ export function HeroSection() {
           <div
             className={`flex flex-col sm:flex-row gap-4 justify-center mb-12 ${isVisible ? "animate-fade-in-up animate-delay-200" : "opacity-0"}`}
           >
-            <Button size="lg" onClick={() => scrollToSection("servicios")} className="text-lg px-8 py-6">
+            <Button size="lg" onClick={() => scrollToSection("servicios")} className="text-black text-lg px-8 py-6">
               Ver Servicios
             </Button>
             <Button
