@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import { ToastProvider } from "@/components/ui/toast";
 import { ProjectsProvider } from "@/contexts/projects-context";
 import { ConditionalViewTransition } from "@/components/conditional-view-transition";
@@ -113,6 +114,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${tasaOrbiter.variable} antialiased font-[family-name:var(--font-tasa-orbiter)]`}
       >
+        <Script
+          id="organization-structured-data"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Inspira Ingeniería",
+              url: "https://www.ingenieriainspira.com",
+              logo: "https://www.ingenieriainspira.com/logo.png",
+              sameAs: [
+                "https://www.instagram.com/inspira.ing"
+              ]
+            })
+          }}
+        />
         <ToastProvider>
           <ProjectsProvider>
             <ConditionalViewTransition>
