@@ -97,7 +97,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
 
           <div className="space-y-8">
           {/* Hero Section */}
-          <div className="relative h-[70vh] rounded-lg overflow-hidden shadow-2xl">
+          <div className="relative h-[50vh] md:h-[70vh] rounded-lg overflow-hidden shadow-2xl">
             <Image
               src={project.coverImage.src}
               alt={project.title}
@@ -108,9 +108,10 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                 viewTransitionName: `project-cover-${project.id}`
               }}
             />
-            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-              <div className="max-w-6xl mx-auto">
-                <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute top-0 left-0 p-4 md:p-8">
+              <div className="max-w-6xl mx-auto flex justify-end">
+                <div className="flex flex-wrap items-center gap-3">
                   <Badge 
                     variant="secondary" 
                     className="bg-primary text-white shadow-lg"
@@ -128,8 +129,12 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                     {project.year}
                   </Badge>
                 </div>
+              </div>
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 text-white">
+              <div className="max-w-6xl mx-auto">
                 <h1 
-                  className="text-5xl md:text-6xl font-bold mb-4 leading-tight"
+                  className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 leading-tight"
                   style={{
                     viewTransitionName: `project-title-${project.id}`
                   }}
@@ -137,17 +142,17 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   {project.title}
                 </h1>
                 <div 
-                  className="flex flex-wrap items-center gap-6 text-lg"
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2 md:gap-6 text-base md:text-lg"
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center text-sm">
                     <MapPin className="h-5 w-5 mr-2" />
                     {project.location}
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center text-sm">
                     <User className="h-5 w-5 mr-2" />
                     {project.architect}
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center text-sm">
                     <Building className="h-5 w-5 mr-2" />
                     {project.specs?.system || 'No especificado'}
                   </div>
@@ -157,13 +162,13 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
           </div>
 
           {/* Project Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             <Card className="bg-background border-primary/30 hover:shadow-lg transition-all duration-300">
               <CardContent className="p-6 flex items-center">
                 <User className="h-6 w-6 text-primary mr-4" />
                 <div>
                   <p className="text-sm text-muted-foreground uppercase font-semibold mb-1">Arquitecto / Director</p>
-                  <p className="font-bold text-lg">{project.architect}</p>
+                  <p className="font-bold text-base md:text-lg">{project.architect}</p>
                 </div>
               </CardContent>
             </Card>
@@ -172,7 +177,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                 <MapPin className="h-6 w-6 text-primary mr-4" />
                 <div>
                   <p className="text-sm text-muted-foreground uppercase font-semibold mb-1">Ubicación del Proyecto</p>
-                  <p className="font-bold text-lg">{project.location}</p>
+                  <p className="font-bold text-base md:text-lg">{project.location}</p>
                 </div>
               </CardContent>
             </Card>
@@ -181,7 +186,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                 <Wrench className="h-6 w-6 text-primary mr-4" />
                 <div>
                   <p className="text-sm text-muted-foreground uppercase font-semibold mb-1">Sistema Constructivo</p>
-                  <p className="font-bold text-lg">{project.specs?.system || 'No especificado'}</p>
+                  <p className="font-bold text-base md:text-lg">{project.specs?.system || 'No especificado'}</p>
                 </div>
               </CardContent>
             </Card>
@@ -189,7 +194,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
 
           {/* Additional Images */}
           {project.images && project.images.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
               {project.images.map((image: ProjectImage, index: number) => (
                 <div 
                   key={index} 
@@ -209,7 +214,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
           )}
 
           {/* Project Details */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
             {/* Left Column */}
             <div className="space-y-6">
               <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -220,7 +225,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-lg">{project.description}</p>
+                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.description}</p>
                 </CardContent>
               </Card>
 
@@ -232,7 +237,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-lg">{project.challenge}</p>
+                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.challenge}</p>
                 </CardContent>
               </Card>
             </div>
@@ -247,7 +252,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-lg">{project.solution}</p>
+                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.solution}</p>
                 </CardContent>
               </Card>
 
@@ -259,7 +264,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-lg">{project.result}</p>
+                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.result}</p>
                 </CardContent>
               </Card>
             </div>
@@ -268,13 +273,13 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
           {/* Technical Specifications */}
           <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-6">
-              <CardTitle className="flex items-center text-2xl uppercase text-foreground">
+              <CardTitle className="flex items-center text-xl md:text-2xl uppercase text-foreground">
                 <Ruler className="h-7 w-7 mr-3 text-primary" />
                 Especificaciones Técnicas
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 <div className="space-y-6">
                   <div className="flex items-start">
                     <Wrench className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />

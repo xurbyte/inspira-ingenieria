@@ -30,7 +30,7 @@ export default function ViviendasPage() {
   }
 
   return (
-    <main className="min-h-screen pt-20 pb-16">
+    <main className="min-h-screen pt-10 pb-16">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <Button variant="ghost" onClick={() => router.push("/#proyectos")} className="mr-4">
@@ -38,37 +38,40 @@ export default function ViviendasPage() {
             Volver
           </Button>
           {/* Header */}
-          <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center justify-center mb-8 mt-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 uppercase">Proyectos de Viviendas</h1>
-              <p className="text-muted-foreground font-semibold">Soluciones residenciales con diferentes sistemas constructivos</p>
+              <h1 className="text-center text-2xl md:text-4xl font-bold text-foreground mb-2 uppercase">Proyectos de Viviendas</h1>
+              <p className="text-center text-sm md:text-base text-muted-foreground font-semibold">Soluciones residenciales con diferentes sistemas constructivos</p>
             </div>
           </div>
 
           {/* Type Filter */}
-          <div className="flex flex-wrap gap-4 mb-8">
+          <div className="flex flex-nowrap gap-3 md:gap-4 mb-8 overflow-x-auto md:overflow-visible pb-1">
             <Button
               variant={selectedType === "tradicional" ? "default" : "outline"}
+              size="sm"
               onClick={() => setSelectedType("tradicional")}
-              className="flex items-center"
+              className="flex items-center gap-1 whitespace-nowrap text-xs sm:text-sm md:text-base px-3 py-2 md:px-5 md:py-2.5"
             >
-              <Home className="h-4 w-4 mr-2" />
+              <Home className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
               Tradicional
             </Button>
             <Button
               variant={selectedType === "steelframe" ? "default" : "outline"}
+              size="sm"
               onClick={() => setSelectedType("steelframe")}
-              className="flex items-center"
+              className="flex items-center gap-1 whitespace-nowrap text-xs sm:text-sm md:text-base px-3 py-2 md:px-5 md:py-2.5"
             >
-              <Hammer className="h-4 w-4 mr-2" />
+              <Hammer className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
               Steel Frame
             </Button>
             <Button
               variant={selectedType === "woodframe" ? "default" : "outline"}
+              size="sm"
               onClick={() => setSelectedType("woodframe")}
-              className="flex items-center"
+              className="flex items-center gap-1 whitespace-nowrap text-xs sm:text-sm md:text-base px-3 py-2 md:px-5 md:py-2.5"
             >
-              <TreePine className="h-4 w-4 mr-2" />
+              <TreePine className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
               Wood Frame
             </Button>
           </div>

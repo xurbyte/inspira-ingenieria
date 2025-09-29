@@ -30,15 +30,15 @@ export function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-background/50 backdrop-blur-sm border-border shadow-sm" : "bg-transparent"
         }`}
     >
-      <div className="container mx-auto px-20 py-4 ">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-20 py-3 md:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
               <Image
                 src="/logo.png"
                 alt="Inspira Ingeniería Logo"
-                width={100}
-                height={40}
-                className="h-12 w-auto cursor-pointer"
+                width={120}
+                height={48}
+                className="h-10 md:h-12 w-auto cursor-pointer scale-[2] sm:scale-[2] md:scale-[3] origin-left"
                 onClick={() => scrollToSection("inicio")}
               />
           </div>
@@ -100,42 +100,42 @@ export function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4">
+          <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-3">
             <nav className="bg-card/95 backdrop-blur-md border border-border rounded-xl shadow-xl overflow-hidden">
-              <div className="p-6 space-y-1">
+              <div className="p-4 space-y-1">
                 <button
                   onClick={() => scrollToSection("inicio")}
-                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
                 >
                   Inicio
                 </button>
                 <button
                   onClick={() => scrollToSection("nosotros")}
-                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
                 >
                   Nosotros
                 </button>
                 <button
                   onClick={() => scrollToSection("servicios")}
-                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
                 >
                   Servicios
                 </button>
                 <button
                   onClick={() => scrollToSection("equipo")}
-                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
                 >
                   Equipo
                 </button>
                 <button
                   onClick={() => scrollToSection("proyectos")}
-                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
                 >
                   Proyectos
                 </button>
                 <button
                   onClick={() => scrollToSection("contacto")}
-                  className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 font-medium"
                 >
                   Contacto
                 </button>

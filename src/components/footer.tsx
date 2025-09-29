@@ -47,24 +47,27 @@ export function Footer() {
           </div>
 
           <div className="border-t border-background/20 mt-8 pt-8 text-center uppercase">
-            <p className="text-sm flex justify-center items-center gap-1">
-              © 2024 Inspira Ingeniería. Todos los derechos reservados. |
-              Desarrollado por
-              <a
-                href="https://xurbyte.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline flex items-center gap-1"
-              >
-                <Image
-                  src="/logoxurbyte.png"
-                  alt="Logo Xurbyte"
-                  width={80} // ancho requerido
-                  height={80} // alto requerido
-                  className="inline-block mb-1"
-                />
-              </a>
-              .
+            <p className="text-sm flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3">
+              <span>© 2024 Inspira Ingeniería. Todos los derechos reservados.</span>
+              <span className="hidden sm:inline">|</span>
+              <span className="flex items-center gap-1">
+                Desarrollado por
+                <a
+                  href="https://xurbyte.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline flex items-center gap-1"
+                >
+                  <Image
+                    src="/logoxurbyte.png"
+                    alt="Logo Xurbyte"
+                    width={80} // ancho requerido
+                    height={80} // alto requerido
+                    className="inline-block mb-1"
+                  />
+                </a>
+                .
+              </span>
             </p>
           </div>
         </div>

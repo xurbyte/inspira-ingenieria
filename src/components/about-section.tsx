@@ -110,7 +110,7 @@ export function AboutSection() {
                   <Award className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold text-foreground mb-2 uppercase">Eficiencia Estructural</h4>
-                <p className="text-sm text-muted-foreground font-semibold">
+                <p className="text-sm text-muted-foreground font-semibold px-8 md:px-0">
                   Optimizamos cada proyecto evitando sobredimensionamientos y logrando ahorros de hasta un 10% en
                   materiales.
                 </p>
@@ -120,7 +120,7 @@ export function AboutSection() {
                   <Target className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold text-foreground mb-2 uppercase">Adaptación Local</h4>
-                <p className="text-sm text-muted-foreground font-semibold">
+                <p className="text-sm text-muted-foreground font-semibold px-8 md:px-0">
                   Diseños adaptados a los vientos fuertes, suelos variables y
                   normativas argentinas.
                 </p>
@@ -130,7 +130,7 @@ export function AboutSection() {
                   <Users className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold text-foreground mb-2 uppercase">Equipo Actualizado</h4>
-                <p className="text-sm text-muted-foreground font-semibold">
+                <p className="text-sm text-muted-foreground font-semibold px-8 md:px-0">
                   Trabajamos con software avanzado y metodologías BIM para
                   una mejor coordinación.
                 </p>
@@ -140,7 +140,7 @@ export function AboutSection() {
                   <Award className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold text-foreground mb-2 uppercase">Socios Confiables</h4>
-                <p className="text-sm text-muted-foreground font-semibold">
+                <p className="text-sm text-muted-foreground font-semibold px-8 md:px-0">
                   Acompañamos desde el anteproyecto, previniendo retrabajos y
                   asegurando claridad técnica.
                 </p>
