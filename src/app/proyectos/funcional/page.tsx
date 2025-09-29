@@ -74,7 +74,7 @@ export default function FuncionalPage() {
 
           {/* Projects Grid */}
           {!loading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {projectsByType[selectedType].length === 0 ? (
                 <div className="col-span-full text-center py-12">
                   <p className="text-muted-foreground">No hay proyectos de este tipo disponibles.</p>
@@ -86,7 +86,7 @@ export default function FuncionalPage() {
                     className="group cursor-pointer overflow-hidden py-0 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-background border-primary/30 shadow-md hover:shadow-primary/20"
                     onClick={() => handleProjectClick(project)}
                   >
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-72 overflow-hidden">
                       <Image
                         src={project.coverImage.src || "/placeholder.svg"}
                         alt={project.coverImage.alt}
