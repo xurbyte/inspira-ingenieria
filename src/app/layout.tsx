@@ -99,7 +99,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Inspira Ingeniería",
-    description: "Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles.",
+    description: "Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles. Proyectos de viviendas, naves industriales y proyectos funcionales en la Patagonia argentina.",
     images: ["/logo-opengraph.png"],
   },
 };
