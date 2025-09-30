@@ -33,6 +33,8 @@ export function TeamSection() {
       image: "/tomas.jpeg",
       description:
         "Especialista en cálculo estructural y elaboración de memorias técnicas, con experiencia en viviendas, edificios y obras industriales",
+      linkedin: "https://www.linkedin.com/in/tomas-federico-portalez-99603a164/",
+      email: "ing.portalez@gmail.com",
     },
     {
       name: "Mateo Portalez",
@@ -40,6 +42,8 @@ export function TeamSection() {
       image: "/mateo.jpeg",
       description:
         "Referente en modelado estructural y documentación técnica, integrando arquitectura y cálculo en entornos BIM.",
+      linkedin: "https://www.linkedin.com/in/mateo-portalez-35a52a370/",
+      email: "ing.mateoportalez@gmail.com",
     },
   ]
 
@@ -79,12 +83,22 @@ export function TeamSection() {
                     <p className="text-primary font-semibold mb-4 uppercase">{member.title}</p>
                     <p className="text-muted-foreground mb-6 leading-relaxed font-semibold">{member.description}</p>
                     <div className="flex justify-center space-x-4">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer">
+                      <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors"
+                        aria-label={`LinkedIn de ${member.name}`}
+                      >
                         <Linkedin className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer">
+                      </a>
+                      <a
+                        href={`mailto:${member.email}`}
+                        className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors"
+                        aria-label={`Enviar correo a ${member.name}`}
+                      >
                         <Mail className="h-5 w-5 text-primary" />
-                      </div>
+                      </a>
                     </div>
                   </CardContent>
                 </Card>
