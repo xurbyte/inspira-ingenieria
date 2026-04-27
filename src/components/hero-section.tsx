@@ -1,92 +1,122 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
-import { Calculator, Building2, Zap } from "lucide-react"
-import { useEffect, useState } from "react"
 import Image from "next/image"
+import { SmoothScrollLink } from "@/components/smooth-scroll-link"
+import { GridOverlay } from "@/components/structural/grid-overlay"
+import { AxisLine } from "@/components/structural/axis-line"
+import { CornerBracket } from "@/components/structural/corner-bracket"
 
 export function HeroSection() {
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
   return (
     <section
       id="inicio"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden"
+      style={{ backgroundColor: "var(--color-dark-section)" }}
     >
+      {/* === Background Layers === */}
+
+      {/* Hero Image — full bleed */}
       <Image
         src="/hero.jpg"
         alt="Inspira Ingeniería - Estructuras seguras en la Patagonia"
         fill
-        className="object-cover -z-10"
+        className="object-cover"
         priority
+        sizes="100vw"
       />
-      <div className="absolute inset-0 bg-black/80 -z-10" />
-      <div className="container mx-auto px-4 pt-20 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className={`mb-8 ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">
-              Transformamos diseños en <span className="text-primary">estructuras seguras</span>
+
+      {/* Asymmetric gradient overlay — dark left (text) to semi-visible right */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(105deg, rgba(44,62,80,0.97) 0%, rgba(44,62,80,0.90) 35%, rgba(44,62,80,0.70) 60%, rgba(44,62,80,0.35) 100%)",
+        }}
+      />
+
+      {/* Subtle structural grid — behind content */}
+      <GridOverlay
+        className="absolute inset-0"
+        color="rgba(255,255,255,0.03)"
+        spacing={80}
+      />
+
+      {/* === Structural Decorations === */}
+
+      {/* Top-left bracket — marks the content zone */}
+      <CornerBracket
+        position="top-left"
+        size={40}
+        className="ml-4 mt-4 md:ml-8 md:mt-8 opacity-50"
+      />
+
+      {/* Bottom-right bracket — counterbalance */}
+      <CornerBracket
+        position="bottom-right"
+        size={40}
+        className="mr-4 mb-4 md:mr-8 md:mb-8 opacity-25"
+      />
+
+      {/* Vertical axis — left edge, blueprint reference line */}
+      <AxisLine
+        direction="vertical"
+        className="absolute left-6 md:left-14 top-0 bottom-0 opacity-20"
+      />
+
+      {/* Horizontal axis — near bottom, ground plane reference */}
+      <AxisLine
+        direction="horizontal"
+        className="absolute bottom-20 md:bottom-24 left-0 right-0 opacity-10"
+      />
+
+      {/* === Content === */}
+      <div className="relative z-10 w-full">
+        <div className="container mx-auto px-4 sm:px-8 lg:px-20 pt-28 pb-20 md:pt-32 md:pb-24">
+          <div className="max-w-3xl mx-auto text-center hero-stagger">
+            {/* Category label — engineering specification style */}
+            <div className="label-mono text-[var(--color-cyan-accent)] mb-6 flex items-center justify-center gap-3">
+              <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
+              <span>INGENIERÍA ESTRUCTURAL · PATAGONIA</span>
+              <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
+            </div>
+
+            {/* Headline — THE visual anchor */}
+            <h1 className="heading-hero text-white mb-8 text-balance">
+              Transformamos diseños en{" "}
+              <span className="text-[var(--color-cyan-accent)]">
+                estructuras seguras
+              </span>
             </h1>
-            <p className="text-xl text-gray-200 mb-8 text-pretty max-w-2xl mx-auto font-semibold">
-              Estudio de ingeniería estructural en Puerto Madryn. Diseñamos soluciones para
-              arquitectos y desarrolladores, adaptadas a la Patagonia.
+
+            {/* Subtitle */}
+            <p className="text-lg md:text-xl text-white/60 max-w-xl mx-auto mb-12 leading-relaxed">
+              Estudio de ingeniería estructural en Puerto Madryn. Diseñamos
+              soluciones para arquitectos y desarrolladores, adaptadas a la
+              Patagonia.
             </p>
-          </div>
 
-          <div
-            className={`flex flex-col sm:flex-row gap-4 justify-center mb-12 ${isVisible ? "animate-fade-in-up animate-delay-200" : "opacity-0"}`}
-          >
-            <Button size="lg" onClick={() => scrollToSection("servicios")} className="text-black text-lg px-8 py-6">
-              Ver Servicios
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => scrollToSection("contacto")}
-              className="text-lg px-8 py-6 bg-white/10 border-white/20 text-white hover:bg-white/20"
-            >
-              Consultanos tu proyecto
-            </Button>
-          </div>
+            {/* CTAs — engineering callout style */}
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <SmoothScrollLink
+                targetId="servicios"
+                className="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold tracking-widest uppercase border-2 border-[var(--color-cyan-accent)] text-white hover:bg-[var(--color-cyan-accent)] hover:text-[var(--color-dark-section)] transition-all duration-300"
+              >
+                Ver Servicios
+              </SmoothScrollLink>
+              <SmoothScrollLink
+                targetId="contacto"
+                className="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold tracking-widest uppercase border border-white/25 text-white/70 hover:text-white hover:border-white/50 transition-all duration-300"
+              >
+                Consultá tu Proyecto
+              </SmoothScrollLink>
+            </div>
 
-          <div
-            className={`grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 ${isVisible ? "animate-fade-in-up animate-delay-400" : "opacity-0"}`}
-          >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
-                <Calculator className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-white uppercase">Cálculo Estructural</h3>
-              <p className="text-gray-200 text-sm font-semibold">Estructuras seguras y eficientes según normativas argentinas
-                (CIRSOC)
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
-                <Building2 className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-white uppercase">Modelado BIM</h3>
-              <p className="text-gray-200 text-sm font-semibold">Modelos digitales integrados con herramientas avanzadas</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
-                <Zap className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-white uppercase">Adaptación Local</h3>
-              <p className="text-gray-200 text-sm font-semibold">Diseñamos estructuras adaptadas a las condiciones únicas de la
-                Patagonia
-              </p>
+            {/* Bottom accent — replaces generic icon cards */}
+            <div className="mt-16 pt-8 border-t border-white/10 flex items-center justify-center gap-4">
+              <div className="w-1.5 h-1.5 bg-[var(--color-cyan-accent)] rotate-45 shrink-0" />
+              <span className="text-white/30 text-sm tracking-wide">
+                Diseño estructural conforme a CIRSOC · Adaptado a la Patagonia
+                argentina
+              </span>
             </div>
           </div>
         </div>

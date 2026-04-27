@@ -1,10 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ImageModal } from "@/components/ui/image-modal"
+import { CornerBracket, AxisLine, GridOverlay } from "@/components/structural"
 import { ArrowLeft, MapPin, User, Building, Wrench, Shield, Ruler, Calendar, CheckCircle, Target, Lightbulb, TrendingUp } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -45,11 +43,6 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
-  // Debug logging
-  console.log('ProjectDetailClient - Project data:', project)
-  console.log('ProjectDetailClient - Project specs:', project?.specs)
-  console.log('ProjectDetailClient - Project specs system:', project?.specs?.system)
-
   const openImageModal = (index: number) => {
     setSelectedImageIndex(index)
     setIsModalOpen(true)
@@ -87,246 +80,252 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
         <div className="max-w-6xl mx-auto">
           {/* Back Button */}
           <div className="mb-6">
-            <Link href={getCategoryPath()}>
-              <Button variant="ghost" className="hover:bg-none">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Volver a {getCategoryLabel()}
-              </Button>
+            <Link
+              href={getCategoryPath()}
+              className="label-mono text-muted-foreground hover:text-[var(--color-cyan-accent)] transition-colors duration-200 flex items-center gap-2 w-fit"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Volver a {getCategoryLabel()}
             </Link>
           </div>
 
           <div className="space-y-8">
-          {/* Hero Section */}
-          <div className="relative h-[50vh] md:h-[70vh] rounded-lg overflow-hidden shadow-2xl">
-            <Image
-              src={project.coverImage.src}
-              alt={project.title}
-              fill
-              className="object-cover"
-              priority
-              style={{
-                viewTransitionName: `project-cover-${project.id}`
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-            <div className="absolute top-0 left-0 p-4 md:p-8">
-              <div className="max-w-6xl mx-auto flex justify-end">
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge 
-                    variant="secondary" 
-                    className="bg-primary text-white shadow-lg"
-                  >
-                    {category.replace('-', ' ').toUpperCase()}
-                  </Badge>
-                  <Badge 
-                    variant="outline" 
-                    className="bg-white/20 text-white border-white/30"
-                    style={{
-                      viewTransitionName: `project-year-${project.id}`
-                    }}
-                  >
-                    <Calendar className="h-3 w-3 mr-1" />
-                    {project.year}
-                  </Badge>
-                </div>
+            {/* Hero Section */}
+            <div className="relative h-[50vh] md:h-[70vh] overflow-hidden">
+              <Image
+                src={project.coverImage.src}
+                alt={project.title}
+                fill
+                className="object-cover"
+                priority
+                style={{
+                  viewTransitionName: `project-cover-${project.id}`
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              <GridOverlay className="absolute inset-0" color="rgba(255,255,255,0.03)" spacing={80} />
+
+              {/* Corner brackets on hero image */}
+              <CornerBracket position="top-left" size={32} color="var(--color-cyan-accent)" />
+              <CornerBracket position="top-right" size={32} color="var(--color-cyan-accent)" />
+              <CornerBracket position="bottom-left" size={32} color="var(--color-cyan-accent)" />
+              <CornerBracket position="bottom-right" size={32} color="var(--color-cyan-accent)" />
+
+              {/* Category badge top-right */}
+              <div className="absolute top-4 right-4 md:top-8 md:right-8 flex flex-wrap gap-3">
+                <span
+                  className="label-mono text-[var(--color-cyan-accent)] border border-[var(--color-cyan-accent)]/40 px-3 py-1"
+                  style={{ viewTransitionName: `project-year-${project.id}` }}
+                >
+                  <Calendar className="inline h-3 w-3 mr-1" />
+                  {project.year}
+                </span>
+                <span className="label-mono bg-[var(--color-cyan-accent)] text-[var(--color-dark-section)] px-3 py-1">
+                  {category.replace('-', ' ').toUpperCase()}
+                </span>
               </div>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 text-white">
-              <div className="max-w-6xl mx-auto">
-                <h1 
-                  className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 leading-tight"
-                  style={{
-                    viewTransitionName: `project-title-${project.id}`
-                  }}
+
+              {/* Title bottom */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 text-white">
+                <div className="label-mono text-[var(--color-cyan-accent)] mb-3 flex items-center gap-3">
+                  <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
+                  <span>PROYECTO</span>
+                </div>
+                <h1
+                  className="heading-section text-white mb-4 leading-tight"
+                  style={{ viewTransitionName: `project-title-${project.id}` }}
                 >
                   {project.title}
                 </h1>
-                <div 
-                  className="flex flex-wrap items-center gap-x-4 gap-y-2 md:gap-6 text-base md:text-lg"
-                >
-                  <div className="flex items-center text-sm">
-                    <MapPin className="h-5 w-5 mr-2" />
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                  <div className="flex items-center text-white/70 text-sm">
+                    <MapPin className="h-4 w-4 mr-2 text-[var(--color-cyan-accent)]" />
                     {project.location}
                   </div>
-                  <div className="flex items-center text-sm">
-                    <User className="h-5 w-5 mr-2" />
+                  <div className="flex items-center text-white/70 text-sm">
+                    <User className="h-4 w-4 mr-2 text-[var(--color-cyan-accent)]" />
                     {project.architect}
                   </div>
-                  <div className="flex items-center text-sm">
-                    <Building className="h-5 w-5 mr-2" />
+                  <div className="flex items-center text-white/70 text-sm">
+                    <Building className="h-4 w-4 mr-2 text-[var(--color-cyan-accent)]" />
                     {project.specs?.system || 'No especificado'}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Project Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            <Card className="bg-background border-primary/30 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 flex items-center">
-                <User className="h-6 w-6 text-primary mr-4" />
+            {/* Project Info Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              {/* Arquitecto */}
+              <div className="border border-border p-6 flex items-center gap-4">
+                <User className="h-6 w-6 text-[var(--color-cyan-accent)] flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-muted-foreground uppercase font-semibold mb-1">Arquitecto / Director</p>
-                  <p className="font-bold text-base md:text-lg">{project.architect}</p>
+                  <p className="label-mono text-muted-foreground mb-1">Arquitecto / Director</p>
+                  <p className="font-bold text-base">{project.architect}</p>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-background border-primary/30 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 flex items-center">
-                <MapPin className="h-6 w-6 text-primary mr-4" />
+              </div>
+              {/* Ubicación */}
+              <div className="border border-border p-6 flex items-center gap-4">
+                <MapPin className="h-6 w-6 text-[var(--color-cyan-accent)] flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-muted-foreground uppercase font-semibold mb-1">Ubicación del Proyecto</p>
-                  <p className="font-bold text-base md:text-lg">{project.location}</p>
+                  <p className="label-mono text-muted-foreground mb-1">Ubicación del Proyecto</p>
+                  <p className="font-bold text-base">{project.location}</p>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-background border-primary/30 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 flex items-center">
-                <Wrench className="h-6 w-6 text-primary mr-4" />
+              </div>
+              {/* Sistema */}
+              <div className="border border-border p-6 flex items-center gap-4">
+                <Wrench className="h-6 w-6 text-[var(--color-cyan-accent)] flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-muted-foreground uppercase font-semibold mb-1">Sistema Constructivo</p>
-                  <p className="font-bold text-base md:text-lg">{project.specs?.system || 'No especificado'}</p>
+                  <p className="label-mono text-muted-foreground mb-1">Sistema Constructivo</p>
+                  <p className="font-bold text-base">{project.specs?.system || 'No especificado'}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Additional Images */}
-          {project.images && project.images.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              {project.images.map((image: ProjectImage, index: number) => (
-                <div 
-                  key={index} 
-                  className="relative h-64 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => openImageModal(index)}
-                >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors" />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Project Details */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            {/* Left Column */}
-            <div className="space-y-6">
-              <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-xl uppercase text-foreground">
-                    <Target className="h-6 w-6 mr-3 text-primary" />
-                    Descripción del Proyecto
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.description}</p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-xl uppercase text-foreground">
-                    <Shield className="h-6 w-6 mr-3 text-primary" />
-                    Desafío Estructural
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.challenge}</p>
-                </CardContent>
-              </Card>
+              </div>
             </div>
 
-            {/* Right Column */}
-            <div className="space-y-6">
-              <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-xl uppercase text-foreground">
-                    <Lightbulb className="h-6 w-6 mr-3 text-primary" />
-                    Solución Técnica
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.solution}</p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-xl uppercase text-foreground">
-                    <TrendingUp className="h-6 w-6 mr-3 text-primary" />
-                    Resultado
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground font-medium leading-relaxed text-base md:text-lg">{project.result}</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Technical Specifications */}
-          <Card className="bg-background border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center text-xl md:text-2xl uppercase text-foreground">
-                <Ruler className="h-7 w-7 mr-3 text-primary" />
-                Especificaciones Técnicas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                <div className="space-y-6">
-                  <div className="flex items-start">
-                    <Wrench className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
-                    <div>
-                      <span className="text-sm text-muted-foreground uppercase font-bold mb-2 block">Sistema Estructural</span>
-                      <span className="text-lg font-semibold text-foreground">
-                        {project.specs?.system || 'No especificado'}
-                      </span>
-                    </div>
+            {/* Additional Images */}
+            {project.images && project.images.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                {project.images.map((image: ProjectImage, index: number) => (
+                  <div
+                    key={index}
+                    className="relative h-64 overflow-hidden cursor-pointer group"
+                    onClick={() => openImageModal(index)}
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                    <CornerBracket position="top-left" size={20} color="var(--color-cyan-accent)" />
+                    <CornerBracket position="top-right" size={20} color="var(--color-cyan-accent)" />
+                    <CornerBracket position="bottom-left" size={20} color="var(--color-cyan-accent)" />
+                    <CornerBracket position="bottom-right" size={20} color="var(--color-cyan-accent)" />
+                    <span className="absolute bottom-3 left-3 label-mono text-white/30 text-xs">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                  <div className="flex items-start">
-                    <Shield className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
-                    <div>
-                      <span className="text-sm text-muted-foreground uppercase font-bold mb-2 block">Fundaciones</span>
-                      <span className="text-lg font-semibold text-foreground">
-                        {project.specs?.foundations || 'No especificado'}
-                      </span>
-                    </div>
+                ))}
+              </div>
+            )}
+
+            {/* Project Details */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Descripción */}
+                <div className="border border-border p-6">
+                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                    <Target className="h-4 w-4" />
+                    <span>DESCRIPCIÓN DEL PROYECTO</span>
                   </div>
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.description}</p>
                 </div>
-                <div className="space-y-6">
-                  <div className="flex items-start">
-                    <Building className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
-                    <div>
-                      <span className="text-sm text-muted-foreground uppercase font-bold mb-2 block">Estructura Principal</span>
-                      <span className="text-lg font-semibold text-foreground">
-                        {project.specs?.structure || 'No especificado'}
-                      </span>
+
+                {/* Desafío */}
+                <div className="border border-border p-6">
+                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                    <Shield className="h-4 w-4" />
+                    <span>DESAFÍO ESTRUCTURAL</span>
+                  </div>
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.challenge}</p>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Solución */}
+                <div className="border border-border p-6">
+                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                    <Lightbulb className="h-4 w-4" />
+                    <span>SOLUCIÓN TÉCNICA</span>
+                  </div>
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.solution}</p>
+                </div>
+
+                {/* Resultado */}
+                <div className="border border-border p-6">
+                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                    <TrendingUp className="h-4 w-4" />
+                    <span>RESULTADO</span>
+                  </div>
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.result}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Specifications — dark engineering data sheet */}
+            <div className="relative dark-section p-6 md:p-10 overflow-hidden">
+              <GridOverlay color="rgba(255,255,255,0.03)" spacing={80} />
+              <CornerBracket position="top-left" size={24} color="var(--color-cyan-accent)" />
+              <CornerBracket position="top-right" size={24} color="var(--color-cyan-accent)" />
+              <CornerBracket position="bottom-left" size={24} color="var(--color-cyan-accent)" />
+              <CornerBracket position="bottom-right" size={24} color="var(--color-cyan-accent)" />
+
+              <div className="relative z-10">
+                <div className="label-mono text-[var(--color-cyan-accent)] mb-2 flex items-center gap-3">
+                  <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
+                  <span>FICHA TÉCNICA</span>
+                </div>
+                <div className="flex items-center gap-3 mb-6">
+                  <Ruler className="h-6 w-6 text-white" />
+                  <h2 className="text-xl md:text-2xl font-bold uppercase tracking-wide text-white">Especificaciones Técnicas</h2>
+                </div>
+                <AxisLine direction="horizontal" className="mb-8" color="rgba(93,173,226,0.3)" />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <Wrench className="h-5 w-5 text-[var(--color-cyan-accent)] mt-1 flex-shrink-0" />
+                      <div>
+                        <span className="label-mono text-white/40 mb-2 block">Sistema Estructural</span>
+                        <span className="text-lg font-semibold text-white">
+                          {project.specs?.system || 'No especificado'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <Shield className="h-5 w-5 text-[var(--color-cyan-accent)] mt-1 flex-shrink-0" />
+                      <div>
+                        <span className="label-mono text-white/40 mb-2 block">Fundaciones</span>
+                        <span className="text-lg font-semibold text-white">
+                          {project.specs?.foundations || 'No especificado'}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
-                    <div>
-                      <span className="text-sm text-muted-foreground uppercase font-bold mb-2 block">Normativa Aplicada</span>
-                      <span className="text-lg font-semibold text-foreground">
-                        {project.specs?.normative || 'No especificado'}
-                      </span>
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <Building className="h-5 w-5 text-[var(--color-cyan-accent)] mt-1 flex-shrink-0" />
+                      <div>
+                        <span className="label-mono text-white/40 mb-2 block">Estructura Principal</span>
+                        <span className="text-lg font-semibold text-white">
+                          {project.specs?.structure || 'No especificado'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <CheckCircle className="h-5 w-5 text-[var(--color-cyan-accent)] mt-1 flex-shrink-0" />
+                      <div>
+                        <span className="label-mono text-white/40 mb-2 block">Normativa Aplicada</span>
+                        <span className="text-lg font-semibold text-white">
+                          {project.specs?.normative || 'No especificado'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
           </div>
         </div>
       </div>
-      
+
       {/* Image Modal */}
       {project.images && (
         <ImageModal
@@ -336,7 +335,6 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
           initialIndex={selectedImageIndex}
         />
       )}
-      
     </main>
   )
 }

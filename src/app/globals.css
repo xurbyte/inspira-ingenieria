@@ -1,63 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
-
-@font-face {
-  font-family: 'TASA Orbiter';
-  src: url('/fonts/TASAOrbiter-VariableFont_wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TASA Orbiter';
-  src: url('/fonts/static/TASAOrbiter-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TASA Orbiter';
-  src: url('/fonts/static/TASAOrbiter-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TASA Orbiter';
-  src: url('/fonts/static/TASAOrbiter-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TASA Orbiter';
-  src: url('/fonts/static/TASAOrbiter-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TASA Orbiter';
-  src: url('/fonts/static/TASAOrbiter-ExtraBold.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'TASA Orbiter', 'Inter', var(--font-geist-sans);
-  --font-mono: 'JetBrains Mono', var(--font-geist-mono);
-  --font-tasa: 'TASA Orbiter', 'Inter', sans-serif;
+  --font-sans: 'TASA Orbiter', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-tasa: 'TASA Orbiter', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -127,6 +78,13 @@
   --sidebar-accent-foreground: #2C3E50;
   --sidebar-border: #DEE2E6;
   --sidebar-ring: #5DADE2;
+
+  /* Precision Brutalist — Design Tokens */
+  --color-dark-section: #2C3E50;
+  --color-cyan-accent: #5DADE2;
+  --color-near-white: #F5F4F0;
+  --color-grid-line: rgba(44, 62, 80, 0.08);
+  --stagger-delay: 120ms;
 }
 
 .dark {
@@ -185,7 +143,191 @@
   }
 }
 
+/* ============================================
+   PRECISION BRUTALIST — Scroll Reveal System
+   ============================================ */
 
+/* --- Keyframe Animations --- */
 
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes draw-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes draw-line-vertical {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes bracket-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- Scroll Reveal Triggers --- */
+/* Only hidden when JS has explicitly set data-visible="false" */
+/* Without JS, no data-visible attribute exists → content stays visible (no FOIC) */
+
+[data-visible="false"] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+[data-visible="false"][data-reveal-left] {
+  transform: translateX(-30px);
+}
+
+[data-visible="false"][data-reveal-scale] {
+  transform: scale(0.95);
+}
+
+[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+/* --- Axis Line Animation --- */
+[data-visible="true"] [data-axis-line],
+[data-axis-line][data-visible="true"] {
+  animation: draw-line 1.2s ease-out both;
+}
+
+/* --- Corner Bracket Animation --- */
+[data-visible="true"] [data-corner-bracket],
+[data-corner-bracket][data-visible="true"] {
+  animation: bracket-appear 0.4s ease-out both;
+}
+
+/* --- Stagger Delay --- */
+/* Applied by ScrollReveal component via inline style.transitionDelay */
+/* The component sets: style="transition-delay: {index * staggerDelay}ms" */
+/* This selector ensures stagger items also transition opacity and transform */
+[data-stagger-index] {
+  transition-property: opacity, transform;
+  transition-duration: 0.6s;
+  transition-timing-function: ease-out;
+}
+
+/* --- Hero Entrance Stagger --- */
+/* The .hero-reveal class on ScrollReveal wrapper keeps parent visible —
+   only children of .hero-stagger animate with sequential delays.
+   Without JS (no data-visible attribute): content renders fully visible. */
+
+[data-visible="false"].hero-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+[data-visible="false"].hero-reveal .hero-stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.hero-stagger > * {
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+[data-visible="true"].hero-reveal .hero-stagger > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays — nth-child timing for sequential entrance */
+[data-visible="true"].hero-reveal .hero-stagger > *:nth-child(1) {
+  transition-delay: 0s;
+}
+[data-visible="true"].hero-reveal .hero-stagger > *:nth-child(2) {
+  transition-delay: 0.15s;
+}
+[data-visible="true"].hero-reveal .hero-stagger > *:nth-child(3) {
+  transition-delay: 0.3s;
+}
+[data-visible="true"].hero-reveal .hero-stagger > *:nth-child(4) {
+  transition-delay: 0.5s;
+}
+[data-visible="true"].hero-reveal .hero-stagger > *:nth-child(5) {
+  transition-delay: 0.65s;
+}
+
+/* --- Dark Section Utility --- */
+.dark-section {
+  background-color: var(--color-dark-section);
+  color: #ffffff;
+}
+
+/* --- Typography Scale (Precision Brutalist) --- */
+.heading-hero {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.heading-section {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+}
+
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

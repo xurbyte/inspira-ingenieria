@@ -2,12 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { DatabaseProject } from "@/types/database";
 import { useProjects } from "@/contexts/projects-context";
+import { CornerBracket, AxisLine } from "@/components/structural";
 
 export default function NavesIndustrialesPage() {
   const router = useRouter()
@@ -22,24 +20,32 @@ export default function NavesIndustrialesPage() {
     <main className="min-h-screen pt-10 pb-16">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <Button variant="ghost" onClick={() => router.push("/#proyectos")} className="mr-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+          {/* Back Button */}
+          <button
+            onClick={() => router.push("/#proyectos")}
+            className="label-mono text-muted-foreground hover:text-[var(--color-cyan-accent)] transition-colors duration-200 flex items-center gap-2 mb-8"
+          >
+            <ArrowLeft className="h-4 w-4" />
             Volver
-          </Button>
+          </button>
+
           {/* Header */}
-          <div className="flex items-center justify-center mt-4 mb-8">
-            <div>
-              <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-2 uppercase">Naves Industriales</h1>
-              <p className="text-center text-sm md:text-base text-muted-foreground font-semibold">Estructuras metálicas para uso industrial</p>
+          <div className="mb-8">
+            <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+              <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
+              <span>CATEGORÍA</span>
             </div>
+            <h1 className="heading-section text-foreground mb-2">Naves Industriales</h1>
+            <p className="text-muted-foreground font-medium">Estructuras metálicas para uso industrial</p>
+            <AxisLine direction="horizontal" className="mt-6" color="var(--color-grid-line)" />
           </div>
 
           {/* Loading State */}
           {loading && (
             <div className="text-center py-12">
               <div className="inline-flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                <p className="text-muted-foreground font-medium">Cargando proyectos...</p>
+                <div className="animate-spin h-6 w-6 border-b-2 border-[var(--color-cyan-accent)]"></div>
+                <p className="label-mono text-muted-foreground">Cargando proyectos...</p>
               </div>
             </div>
           )}
@@ -53,9 +59,9 @@ export default function NavesIndustrialesPage() {
                 </div>
               ) : (
                 projects.map((project, index) => (
-                  <Card
+                  <div
                     key={project.id}
-                    className="group cursor-pointer overflow-hidden py-0 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-background border-primary/30 shadow-md hover:shadow-primary/20"
+                    className="group cursor-pointer border border-border/50 hover:border-[var(--color-cyan-accent)]/40 transition-all duration-300 overflow-hidden"
                     onClick={() => handleProjectClick(project)}
                   >
                     <div className="relative h-72 overflow-hidden">
@@ -63,44 +69,47 @@ export default function NavesIndustrialesPage() {
                         src={project.coverImage.src || "/placeholder.svg"}
                         alt={project.coverImage.alt}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                         placeholder="blur"
                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                         priority={index < 3}
-                        style={{
-                          viewTransitionName: `project-cover-${project.id}`
-                        }}
+                        style={{ viewTransitionName: `project-cover-${project.id}` }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent group-hover:bg-gradient-to-t group-hover:from-black/40 transition-all duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      <CornerBracket position="top-left" size={20} color="var(--color-cyan-accent)" />
+                      <CornerBracket position="top-right" size={20} color="var(--color-cyan-accent)" />
+                      <CornerBracket position="bottom-left" size={20} color="var(--color-cyan-accent)" />
+                      <CornerBracket position="bottom-right" size={20} color="var(--color-cyan-accent)" />
+
+                      {/* Year badge */}
                       <div className="absolute top-4 right-4">
-                        <Badge 
-                          variant="secondary" 
-                          className="bg-white/90 text-foreground shadow-lg"
-                          style={{
-                            viewTransitionName: `project-year-${project.id}`
-                          }}
+                        <span
+                          className="label-mono text-white bg-[var(--color-dark-section)]/90 px-2 py-1 text-xs"
+                          style={{ viewTransitionName: `project-year-${project.id}` }}
                         >
                           {project.year}
-                        </Badge>
+                        </span>
                       </div>
+
+                      {/* Number label */}
+                      <span className="absolute top-4 left-4 label-mono text-white/20 text-xs">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
                       <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <h3 
-                          className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300 uppercase leading-tight"
-                          style={{
-                            viewTransitionName: `project-title-${project.id}`
-                          }}
+                        <h3
+                          className="text-xl font-bold text-white mb-2 uppercase leading-tight"
+                          style={{ viewTransitionName: `project-title-${project.id}` }}
                         >
                           {project.title}
                         </h3>
-                        <div 
-                          className="flex items-center text-white/90 text-sm font-medium"
-                        >
-                          <MapPin className="h-4 w-4 mr-2" />
+                        <div className="flex items-center text-white/70 text-sm">
+                          <MapPin className="h-4 w-4 mr-2 text-[var(--color-cyan-accent)]" />
                           {project.location}
                         </div>
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 ))
               )}
             </div>
