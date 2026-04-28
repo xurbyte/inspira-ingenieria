@@ -119,7 +119,7 @@ export function ContactSection() {
       <div className="container mx-auto px-4 sm:px-8 lg:px-16">
         {/* Section Heading */}
         <div className="mb-16 md:mb-20">
-          <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+          <div className="label-mono mb-4 flex items-center gap-3">
             <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
             <span>CONTACTO</span>
           </div>
@@ -289,7 +289,7 @@ export function ContactSection() {
           <div className="lg:col-span-2 space-y-0">
             {/* Contact details — structured data */}
             <div className="py-6">
-              <div className="label-mono text-[var(--color-cyan-accent)] mb-5 flex items-center gap-3">
+              <div className="label-mono mb-5 flex items-center gap-3">
                 <span className="inline-block w-6 h-px bg-[var(--color-cyan-accent)]" />
                 <span>DATOS DE CONTACTO</span>
               </div>
@@ -339,7 +339,7 @@ export function ContactSection() {
 
             {/* Social links */}
             <div className="py-6">
-              <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+              <div className="label-mono mb-4 flex items-center gap-3">
                 <span className="inline-block w-6 h-px bg-[var(--color-cyan-accent)]" />
                 <span>REDES</span>
               </div>

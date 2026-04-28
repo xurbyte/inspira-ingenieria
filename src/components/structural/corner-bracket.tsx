@@ -16,7 +16,7 @@ export function CornerBracket({
   position,
   size = 24,
   className,
-  color = "var(--color-cyan-accent, #5DADE2)",
+  color = "var(--color-cyan-accent, #2E98C5)",
 }: CornerBracketProps) {
   const isTop = position.startsWith("top");
   const isLeft = position.endsWith("left");

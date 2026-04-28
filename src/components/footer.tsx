@@ -20,9 +20,12 @@ export function Footer() {
           {/* Logo & Description — wider */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-xl font-bold uppercase text-white tracking-wide">
-                Inspira Ingeniería
-              </span>
+              <Image
+                src="/logo-blanco.png"
+                alt="Inspira Ingeniería"
+                width={160}
+                height={48}
+              />
             </div>
             <p className="text-white/50 mb-4 max-w-md leading-relaxed text-sm">
               Estudio de ingeniería civil especializado en cálculo estructural

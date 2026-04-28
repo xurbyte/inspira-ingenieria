@@ -2,7 +2,7 @@ interface AxisLineProps {
   /** Line direction */
   direction: "horizontal" | "vertical";
   className?: string;
-  /** Line color. Default: cyan accent (#5DADE2) */
+  /** Line color. Default: cyan accent (#2E98C5) */
   color?: string;
 }
 
@@ -13,7 +13,7 @@ interface AxisLineProps {
 export function AxisLine({
   direction,
   className,
-  color = "var(--color-cyan-accent, #5DADE2)",
+  color = "var(--color-cyan-accent, #2E98C5)",
 }: AxisLineProps) {
   const isHorizontal = direction === "horizontal";
 

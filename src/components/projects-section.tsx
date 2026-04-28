@@ -50,7 +50,7 @@ export function ProjectsSection() {
       <div
         aria-hidden="true"
         className="absolute inset-0"
-        style={{ background: "rgba(44,62,80,0.82)" }}
+        style={{ background: "rgba(var(--color-dark-section-rgb) / 0.82)" }}
       />
       {/* Subtle grid */}
       <GridOverlay
@@ -93,7 +93,7 @@ export function ProjectsSection() {
               key={i}
               href={cat.href}
               className="group border border-white/10 p-6 md:p-8 hover:border-[var(--color-cyan-accent)]/40 transition-all duration-300 relative"
-              style={{ backgroundColor: "rgba(44,62,80,0.6)" }}
+              style={{ backgroundColor: "rgba(var(--color-dark-section-rgb) / 0.6)" }}
             >
               {/* Numbered label */}
               <div className="flex items-center gap-3 mb-6">

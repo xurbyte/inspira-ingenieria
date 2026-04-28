@@ -29,7 +29,7 @@ export function HeroSection() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(105deg, rgba(44,62,80,0.97) 0%, rgba(44,62,80,0.90) 35%, rgba(44,62,80,0.70) 60%, rgba(44,62,80,0.35) 100%)",
+            "linear-gradient(105deg, rgba(var(--color-dark-section-rgb) / 0.97) 0%, rgba(var(--color-dark-section-rgb) / 0.90) 35%, rgba(var(--color-dark-section-rgb) / 0.70) 60%, rgba(var(--color-dark-section-rgb) / 0.35) 100%)",
         }}
       />
 

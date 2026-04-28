@@ -48,7 +48,7 @@ export default function ViviendasPage() {
 
           {/* Header */}
           <div className="mb-8">
-            <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+            <div className="label-mono mb-4 flex items-center gap-3">
               <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
               <span>CATEGORÍA</span>
             </div>

@@ -102,7 +102,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   viewTransitionName: `project-cover-${project.id}`
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(var(--color-dark-section-rgb) / 0.80) 0%, rgba(var(--color-dark-section-rgb) / 0.40) 50%, transparent 100%)" }} />
               <GridOverlay className="absolute inset-0" color="rgba(255,255,255,0.03)" spacing={80} />
 
               {/* Corner brackets on hero image */}
@@ -216,21 +216,21 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
               <div className="space-y-6">
                 {/* Descripción */}
                 <div className="border border-border p-6">
-                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                  <div className="label-mono mb-4 flex items-center gap-3">
                     <Target className="h-4 w-4" />
                     <span>DESCRIPCIÓN DEL PROYECTO</span>
                   </div>
-                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(var(--color-cyan-accent-rgb) / 0.2)" />
                   <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.description}</p>
                 </div>
 
                 {/* Desafío */}
                 <div className="border border-border p-6">
-                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                  <div className="label-mono mb-4 flex items-center gap-3">
                     <Shield className="h-4 w-4" />
                     <span>DESAFÍO ESTRUCTURAL</span>
                   </div>
-                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(var(--color-cyan-accent-rgb) / 0.2)" />
                   <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.challenge}</p>
                 </div>
               </div>
@@ -239,21 +239,21 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
               <div className="space-y-6">
                 {/* Solución */}
                 <div className="border border-border p-6">
-                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                  <div className="label-mono mb-4 flex items-center gap-3">
                     <Lightbulb className="h-4 w-4" />
                     <span>SOLUCIÓN TÉCNICA</span>
                   </div>
-                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(var(--color-cyan-accent-rgb) / 0.2)" />
                   <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.solution}</p>
                 </div>
 
                 {/* Resultado */}
                 <div className="border border-border p-6">
-                  <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+                  <div className="label-mono mb-4 flex items-center gap-3">
                     <TrendingUp className="h-4 w-4" />
                     <span>RESULTADO</span>
                   </div>
-                  <AxisLine direction="horizontal" className="mb-4" color="rgba(93,173,226,0.2)" />
+                  <AxisLine direction="horizontal" className="mb-4" color="rgba(var(--color-cyan-accent-rgb) / 0.2)" />
                   <p className="text-muted-foreground leading-relaxed text-base md:text-lg">{project.result}</p>
                 </div>
               </div>
@@ -276,7 +276,7 @@ export function ProjectDetailClient({ project, category }: ProjectDetailClientPr
                   <Ruler className="h-6 w-6 text-white" />
                   <h2 className="text-xl md:text-2xl font-bold uppercase tracking-wide text-white">Especificaciones Técnicas</h2>
                 </div>
-                <AxisLine direction="horizontal" className="mb-8" color="rgba(93,173,226,0.3)" />
+                <AxisLine direction="horizontal" className="mb-8" color="rgba(var(--color-cyan-accent-rgb) / 0.3)" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                   <div className="space-y-6">

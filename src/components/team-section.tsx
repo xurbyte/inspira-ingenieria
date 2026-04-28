@@ -30,7 +30,7 @@ export function TeamSection() {
       <div className="container mx-auto px-4 sm:px-8 lg:px-16">
         {/* Section Heading */}
         <div className="mb-16 md:mb-24">
-          <div className="label-mono text-[var(--color-cyan-accent)] mb-4 flex items-center gap-3">
+          <div className="label-mono mb-4 flex items-center gap-3">
             <span className="inline-block w-8 h-px bg-[var(--color-cyan-accent)]" />
             <span>EQUIPO</span>
           </div>
@@ -70,7 +70,7 @@ export function TeamSection() {
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(180deg, rgba(93,173,226,0.10) 0%, rgba(93,173,226,0.25) 100%)",
+                      "linear-gradient(180deg, rgba(var(--color-cyan-accent-rgb) / 0.10) 0%, rgba(var(--color-cyan-accent-rgb) / 0.25) 100%)",
                     mixBlendMode: "color",
                   }}
                 />
@@ -80,7 +80,7 @@ export function TeamSection() {
 
               {/* Info below photo */}
               <div className="relative z-10">
-                <div className="label-mono text-[var(--color-cyan-accent)] mb-3 flex items-center gap-2">
+                <div className="label-mono mb-3 flex items-center gap-2">
                   <span className="text-foreground/30">{String(i + 1).padStart(2, "0")}</span>
                   <span className="inline-block w-4 h-px bg-[var(--color-cyan-accent)]" />
                   <span>CO-FUNDADOR</span>
@@ -88,7 +88,7 @@ export function TeamSection() {
                 <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground uppercase tracking-wide mb-1">
                   {member.name}
                 </h3>
-                <p className="text-[var(--color-cyan-accent)] font-semibold text-sm uppercase tracking-wider mb-4">
+                <p className="text-foreground/60 font-semibold text-sm uppercase tracking-wider mb-4">
                   {member.title}
                 </p>
                 <p className="text-base md:text-lg text-foreground/70 leading-relaxed mb-6">

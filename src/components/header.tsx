@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
@@ -18,12 +19,15 @@ const NAV_ITEMS = [
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  const logoSrc = (!isScrolled && pathname === "/") ? "/logo-blanco.png" : "/logo-negro.png"
 
   const closeMenu = () => setIsMenuOpen(false)
 
@@ -40,7 +44,7 @@ export function Header() {
           {/* Logo */}
           <SmoothScrollLink targetId="inicio" onClick={closeMenu}>
             <Image
-              src="/logo.png"
+              src={logoSrc}
               alt="Inspira Ingeniería Logo"
               width={200}
               height={80}
@@ -73,6 +77,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
+            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             className={`md:hidden ${
               !isScrolled && "text-white hover:text-[var(--color-cyan-accent)]"
             }`}

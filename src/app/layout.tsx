@@ -1,41 +1,29 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Orbitron, Nunito, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { ToastProvider } from "@/components/ui/toast";
 import { ProjectsProvider } from "@/contexts/projects-context";
 import { ConditionalViewTransition } from "@/components/conditional-view-transition";
 import "./globals.css";
 
-const tasaOrbiter = localFont({
-  src: [
-    {
-      path: '../../public/fonts/static/TASAOrbiter-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-Medium.ttf',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-SemiBold.ttf',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/static/TASAOrbiter-ExtraBold.ttf',
-      weight: '800',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-tasa-orbiter',
-  display: 'swap',
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-heading",
+  display: "swap",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -128,9 +116,6 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
   openGraph: {
     title: "Inspira Ingeniería",
     description: "Estudio de ingeniería civil en Puerto Madryn, Chubut. Expertos en diseño estructural, consultoría y proyectos sostenibles.",
@@ -161,9 +146,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${orbitron.variable} ${nunito.variable} ${geistMono.variable}`}>
       <body
-        className={`${tasaOrbiter.variable} antialiased font-[family-name:var(--font-tasa-orbiter)]`}
+        className="font-sans antialiased"
       >
         {/* Google Analytics */}
         <Script
@@ -189,7 +174,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Inspira Ingeniería",
               url: "https://www.ingenieriainspira.com",
-              logo: "https://www.ingenieriainspira.com/logo.png",
+              logo: "https://www.ingenieriainspira.com/logo-negro.png",
               sameAs: [
                 "https://www.instagram.com/inspira.ing"
               ]

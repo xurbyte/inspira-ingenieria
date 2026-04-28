@@ -21,7 +21,7 @@ export function GridOverlay({
 }: GridOverlayProps) {
   const lineColor =
     color === "currentColor"
-      ? `rgba(44, 62, 80, ${opacity})`
+      ? `rgba(var(--color-dark-section-rgb) / ${opacity})`
       : color;
 
   return (
